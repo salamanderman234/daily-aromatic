@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- tailwindcss -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- fontawesome -->
+		<script
+			src="https://kit.fontawesome.com/d5e15c66ab.js"
+			crossorigin="anonymous"
+		></script>
+		<link rel="stylesheet" href="/assets/css/index.css" />
+		<title>{{ app_name }}</title>
+	</head>
+	<body>
+		<!-- navbar -->
+		<nav
+			class="bg-white opacity-90 px-4 md:px-14 py-1 fixed w-full z-20 top-0 left-0"
+		>
+			<div
+				class="container flex flex-wrap items-center justify-between mx-auto"
+			>
+				<!-- logo -->
+				<a href="https://flowbite.com/" class="flex items-center">
+					<img
+						src="https://flowbite.com/docs/images/logo.svg"
+						class="h-6 mr-2 flex md:h-9"
+						alt="Flowbite Logo"
+					/>
+					<span
+						class="self-center text-lg whitespace-nowrap mr-2 font-bold md:text-2xl"
+						>Daily Aromatic</span
+					>
+				</a>
+				<!-- log -->
+				<!-- hamburger menu -->
+				<div class="flex sm:order-1 md:hidden">
+					<button
+						data-collapse-toggle="navbar-sticky"
+						type="button"
+						class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+						aria-controls="navbar-sticky"
+						aria-expanded="false"
+					>
+						<span class="sr-only">Open main menu</span>
+						<svg
+							class="w-9 h-9"
+							aria-hidden="true"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+								clip-rule="evenodd"
+							></path>
+						</svg>
+					</button>
+				</div>
+				<!-- end of hamburger menu -->
+				<!-- menu -->
+				<div
+					class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+					id="navbar-sticky"
+				>
+					<ul
+						class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-xl md:font-medium md:border-0"
+					>
+						<li class="flex items-center">
+							<a
+								href="#"
+								class="block py-2 pl-3 pr-4 rounded md:p-0 text-slate-700 hover:text-orange-400 transition-all duration-500"
+								>Produk</a
+							>
+						</li>
+						{% if user == nil %}
+						<li class="flex items-center">
+							<a
+								href="#"
+								class="block border text-base font-bold py-2 p-0 px-5 rounded-md bg-orange-400 hover:bg-white hover:border hover:border-orange-400 text-white hover:text-orange-400 transition-all duration-500"
+								>Masuk / Daftar</a
+							>
+						</li>
+						{% endif %}
+					</ul>
+				</div>
+				<!-- end of menu -->
+			</div>
+		</nav>
+		<!-- end of navbar -->
+		<main>
+			<!-- banner -->
+			<div
+				class="h-96 py-72 px-5 md:py-0 md:h-screen flex justify-center flex-col items-center landing-banner"
+				id="landing-banner"
+			>
+				<h1
+					class="text-white text-4xl md:text-6xl font-bold text-center mt-10 md:mt-36"
+				>
+					Temukan dupa pilihan mu sekarang !
+				</h1>
+				<!-- search -->
+				<form action="" class="flex mt-10">
+					<input
+						type="text"
+						class="bg-white border rounded-l-md h-12 w-72 md:w-96 pl-10 pr-5 text-sm md:text-base focus:border-orange-400"
+						placeholder="Nama dupa atau jenis aroma"
+					/>
+					<button
+						type="submit"
+						class="bg-orange-400 hover:bg-orange-500 rounded-r-md px-5 h-12 font-semibold text-white hover:text-slate-100 duration-500 transition-all"
+					>
+						search
+					</button>
+				</form>
+				<!-- search -->
+				<!-- relevant search -->
+				<div class="grid grid-cols-5 gap-2 mt-10">
+					<div
+						class="rounded-md bg-orange-400 py-2 px-4 flex flex-col items-center justify-center text-white text-xs md:text-sm"
+					>
+						<i class="fa-brands fa-twitter text-2xl"></i>
+						<span class="font-semibold">Jepun</span>
+					</div>
+					<div
+						class="rounded-md bg-orange-400 py-2 px-4 flex flex-col items-center justify-center text-white text-xs md:text-sm"
+					>
+						<i class="fa-brands fa-twitter text-2xl"></i>
+						<span class="font-semibold">Jepun</span>
+					</div>
+					<div
+						class="rounded-md bg-orange-400 py-2 px-4 flex flex-col items-center justify-center text-white text-xs md:text-sm"
+					>
+						<i class="fa-brands fa-twitter text-2xl"></i>
+						<span class="font-semibold">Jepun</span>
+					</div>
+					<div
+						class="rounded-md bg-orange-400 py-2 px-4 flex flex-col items-center justify-center text-white text-xs md:text-sm"
+					>
+						<i class="fa-brands fa-twitter text-2xl"></i>
+						<span class="font-semibold">Tembakau</span>
+					</div>
+					<div
+						class="rounded-md bg-orange-400 py-2 px-4 flex flex-col items-center justify-center text-white text-xs md:text-sm"
+					>
+						<i class="fa-brands fa-twitter text-2xl"></i>
+						<span class="font-semibold">Kuburan</span>
+					</div>
+				</div>
+				<!-- end of relevant search -->
+				<div
+					class="hidden md:block text-4xl mt-20 text-white hover:text-orange-400 duration-500 transition-all"
+				>
+					<a href="#lastest-review">
+						<i class="fa-solid fa-angles-down"></i>
+					</a>
+				</div>
+			</div>
+			<!-- end of banner -->
+			<!-- lastest review -->
+			<section
+				id="lastest-review"
+				class="bg-white px-5 md:px-10 py-10 group"
+			>
+				<div class="w-fit">
+					<!-- sub (review terakhir) -->
+					<h2 class="text-2xl md:text-3xl font-bold text-slate-700">
+						Review Terbaru
+					</h2>
+					<!-- end of sub -->
+					<hr
+						class="mt-2 rounded-full border-4 border-orange-400 w-2/4 group-hover:w-full duration-500 transition-all"
+					/>
+				</div>
+				<!-- lastest review container -->
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-5">
+					<!-- card -->
+					{% if reviews != nil && len(reviews) != 0 %}
+						{% for review in reviews %}
+						<div
+							class="rounded-md p-5 border border-slate-300 hover:border-orange-400 hover:shadow-orange-400 hover:shadow-md duration-500 transition-all"
+						>
+							<!-- product -->
+							<div class="flex items-center">
+								<img
+									class="w-20 max-h-40"
+									src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/6/19/f5c15304-a4e6-4334-b02f-4b3ee27c1501.jpg"
+									alt=""
+								/>
+								<div class="ml-5 flex flex-col">
+									<a
+										href=""
+										class="font-bold text-lg hover:text-orange-400 truncate duration-500 transition-all"
+										>Dupa Natsu</a
+									>
+									<span class="font-semibold text-sm"
+										>Varian :
+										<span class="font-bold"
+											>Kemenyan</span
+										></span
+									>
+									<div class="my-2 text-xs">
+										<span class="mr-2">4.0</span>
+										<i
+											class="fa-solid fa-star text-yellow-400"
+										></i>
+										<i
+											class="fa-solid fa-star text-yellow-400"
+										></i>
+										<i
+											class="fa-solid fa-star text-yellow-400"
+										></i>
+										<i
+											class="fa-solid fa-star text-yellow-400"
+										></i>
+										<i class="fa-solid fa-star"></i>
+										<span class="ml-2">(269)</span>
+									</div>
+								</div>
+							</div>
+							<hr class="my-3 border-slate-300" />
+							<!-- user and time -->
+							<div class="flex justify-between">
+								<div class="flex items-center w-3/4">
+									<img
+										src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg"
+										alt=""
+										class="rounded-full w-10 h-10"
+									/>
+									<a
+										href=""
+										class="ml-1 truncate font-bold hover:text-orange-400 duration-500 transition-all"
+										>{{ review.User.Username }}</a
+									>
+								</div>
+								<div
+									class="flex items-center justify-evenly text-xs"
+								>
+									<span class="text-slate-600">an hour ago</span>
+								</div>
+							</div>
+							<!-- stars -->
+							<div class="my-2 text-xl">
+								<i class="fa-solid fa-star text-yellow-400"></i>
+								<i class="fa-solid fa-star text-yellow-400"></i>
+								<i class="fa-solid fa-star text-yellow-400"></i>
+								<i class="fa-solid fa-star text-yellow-400"></i>
+								<i class="fa-solid fa-star"></i>
+							</div>
+							<!-- review detail -->
+							<a href="">
+								Lorem ipsum dolor sit, amet consectetur adipisicing
+								elit. Consectetur ducimus repellendus, reprehenderit
+								eligendi ipsam magnam minima pariatur aliquid
+								repudiandae beatae adipisci, praesentium delectus
+								perspiciatis qui atque ea provident fugiat?
+								Aspernatur facilis quod dolore doloribus libero
+								suscipit veniam praesentium. Nemo culpa corporis et
+								modi assumenda suscipit, dolores quasi perspiciatis
+								dignissimos rem!
+							</a>
+						</div>
+						{% endfor %}
+					{% else %}
+						<span class="text-slate-700 font-semibold text-lg">Belum ada review terbaru !</span>
+					{% endif %}
+				</div>
+			</section>
+			<!-- end of lastest review container -->
+			<!-- pagination -->
+			<div class="w-full flex justify-center items-center mb-10">
+				<a href="" class="py-2 px-3 mx-1 bg-orange-400 text-white">
+					1
+				</a>
+				<a
+					href=""
+					class="py-2 px-3 mx-1 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white duration-500 transition-all"
+				>
+					2
+				</a>
+				<a
+					href=""
+					class="py-2 px-3 mx-1 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white duration-500 transition-all"
+				>
+					3
+				</a>
+				<span class="text-orange-400 mx-1">. . .</span>
+				<a
+					href=""
+					class="py-2 px-3 mx-1 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white duration-500 transition-all"
+				>
+					35
+				</a>
+			</div>
+			<!-- end of pagination -->
+		</main>
+		<footer class="bg-orange-400 px-10 pt-10 pb-5">
+			<div class="flex justify-center items-center text-white">
+				<span
+					>Made with <i class="fa-solid fa-heart text-red-500"></i> by
+					<a
+						href="https://github.com/salamanderman234"
+						class="underline"
+						target="_blank"
+						>salamanderman234</a
+					></span
+				>
+			</div>
+		</footer>
+	</body>
+</html>

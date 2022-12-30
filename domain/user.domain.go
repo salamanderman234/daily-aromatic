@@ -9,6 +9,7 @@ type UserService interface {
 	CreateUser(user entity.User) error
 	UpdateUser(id uint, updatedField entity.User) error
 	GetUser(username string, pass string) (entity.User, bool, error)
+	GetUserReviews(id uint) ([]entity.Review, error)
 }
 
 type UserRepository interface {
