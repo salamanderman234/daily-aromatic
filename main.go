@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/flosch/pongo2/v6"
 	"github.com/labstack/echo/v4"
@@ -26,9 +27,18 @@ func main() {
 			"main_url": "localhost:1323",
 			"reviews": []entity.Review{
 				{
+					Product: entity.Product{
+						Nama:         "Dupa Natsu Ea",
+						Aroma:        "Gandarwa",
+						Rating:       3.0,
+						JumlahReview: 69,
+					},
 					User: entity.User{
 						Username: "Henzo",
 					},
+					Rate:      4.9,
+					Comment:   "Bullcrap",
+					CreatedAt: time.Now().Add(5 * -time.Hour),
 				},
 			},
 		}

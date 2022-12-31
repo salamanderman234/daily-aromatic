@@ -8,6 +8,7 @@ type Product struct {
 	Pabrikan     string  `json:"pabrikan"`
 	Warna        string  `json:"warna"`
 	JenisDupa    string  `json:"jenis_dupa"`
+	Aroma        string  `json:"aroma"`
 	JenisAroma   string  `json:"jenis_aroma"`
 	JenisAbu     string  `json:"jenis_abu"`
 	LamaNyala    int     `json:"lama_nyala"`
