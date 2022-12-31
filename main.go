@@ -1,49 +1,61 @@
 package main
 
 import (
-	"net/http"
-	"time"
+	"fmt"
 
-	"github.com/flosch/pongo2/v6"
 	"github.com/labstack/echo/v4"
 	"github.com/salamanderman234/daily-aromatic/config"
-	entity "github.com/salamanderman234/daily-aromatic/entities"
+	"github.com/salamanderman234/daily-aromatic/domain"
+	handler "github.com/salamanderman234/daily-aromatic/handlers"
+	repository "github.com/salamanderman234/daily-aromatic/repositories"
+	route "github.com/salamanderman234/daily-aromatic/routes"
+	service "github.com/salamanderman234/daily-aromatic/services"
 	utility "github.com/salamanderman234/daily-aromatic/utilities"
+	"github.com/spf13/viper"
 )
 
-// func init() {
-
-// }
+func init() {
+	// set config
+	viper.SetConfigName("config")
+	viper.SetConfigType("json")
+	viper.AddConfigPath("./config/")
+	err := viper.ReadInConfig() // Find and read the config file
+	if err != nil {             // Handle errors reading the config file
+		panic(fmt.Errorf("fatal error config file: %w", err))
+	}
+}
 
 func main() {
-	var tplExample = utility.Renderer{Debug: true}
+	// connect db
+	conn, err := config.ConnectToDatabase()
+	if err != nil {
+		panic(err)
+	}
+
+	// set templating engine
+	tplExample := utility.Renderer{Debug: true}
 	// set echo mux
 	mux := echo.New()
-	mux.Static("/assets", "public")
-	mux.GET("/", func(c echo.Context) error {
-		statusCode := http.StatusOK
-		data := pongo2.Context{
-			"user":     c.Get("user"),
-			"main_url": "localhost:1323",
-			"reviews": []entity.Review{
-				{
-					Product: entity.Product{
-						Nama:         "Dupa Natsu Ea",
-						Aroma:        "Gandarwa",
-						Rating:       3.0,
-						JumlahReview: 69,
-					},
-					User: entity.User{
-						Username: "Henzo",
-					},
-					Rate:      4.9,
-					Comment:   "Bullcrap",
-					CreatedAt: time.Now().Add(5 * -time.Hour),
-				},
-			},
-		}
-		return c.Render(statusCode, config.FromViews("/landing.html"), data)
-	})
 	mux.Renderer = tplExample
+	mux.Static("/assets", "public")
+	// mux.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+	// 	TokenLookup: "header:X-XSRF-TOKEN",
+	// }))
+
+	// // dependecies inject
+	// // repo
+	productRepo := repository.NewProductRepository(conn)
+	// // service
+	productServ := service.NewProductService(productRepo)
+	// handler
+	userViewHandler := handler.NewUserViewHandler(productServ)
+	// route
+	var routeList []domain.Route
+	routeList = append(routeList, route.NewUserViewRoute(mux, userViewHandler))
+
+	for _, route := range routeList {
+		route.Register()
+	}
+
 	mux.Logger.Fatal(mux.Start(":1323"))
 }
