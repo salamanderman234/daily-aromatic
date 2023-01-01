@@ -15,10 +15,9 @@ type ReviewService interface {
 }
 
 type ReviewRepository interface {
-	CreateReview(review model.Review) error
+	CreateReviews(reviews []model.Review) error
 	GetReviewByID(id uint) (model.Review, error)
-	GetAllReviews() ([]model.Review, error)
-	GetReviewsByUserID(user_id uint) ([]model.Review, error)
-	UpdateReview(id uint) error
+	GetReviews(limit int, skip int, filter model.Review) ([]model.Review, error)
+	UpdateReview(id uint, updatedField model.Review) error
 	DeleteReview(id uint) error
 }

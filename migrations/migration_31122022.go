@@ -24,9 +24,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	modelList := []interface{}{
+		&model.Product{},
+		&model.User{},
+		&model.Review{},
+	}
 
-	err = conn.AutoMigrate(&model.Product{})
-	if err != nil {
-		panic(err)
+	for _, model := range modelList {
+		err = conn.AutoMigrate(model)
+		if err != nil {
+			panic(err)
+		}
 	}
 }

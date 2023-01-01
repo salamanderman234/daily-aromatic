@@ -4,9 +4,10 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	UserID        int    `json:"user_id"`
-	Username      string `json:"username"`
-	FollowerTotal int    `json:"follower_total"`
-	ReviewTotal   int    `json:"review_total"`
-	Bio           string `json:"bio"`
+	Username      string   `json:"username,omitempty" gorm:"unique"`
+	Password      string   `json:"password,omitempty"`
+	Reviews       []Review `json:"reviews,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	FollowerTotal int      `json:"follower_total,omitempty"`
+	ReviewTotal   int      `json:"review_total,omitempty"`
+	Bio           string   `json:"bio,omitempty"`
 }

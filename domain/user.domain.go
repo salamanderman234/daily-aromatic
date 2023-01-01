@@ -14,7 +14,7 @@ type UserService interface {
 
 type UserRepository interface {
 	CreateUser(user model.User) error
-	UpdateUser(id uint, updatedField model.User)
+	UpdateUser(id uint, updatedField model.User) error
 	GetUserByID(id uint) (model.User, error)
-	GetUserByCred(username string, pass string) (entity.User, bool, error)
+	GetUserByCred(username string, pass string) (model.User, bool, error)
 }

@@ -43,7 +43,7 @@ func (p *productRepository) GetProductByID(id uint) (model.Product, error) {
 }
 func (p *productRepository) GetProducts(limit int, skip int, filter model.Product) ([]model.Product, error) {
 	var products []model.Product
-	result := p.conn.Where(&filter).Offset(skip).Limit(limit).Order("age desc, name").Find(&products)
+	result := p.conn.Where(&filter).Offset(skip).Limit(limit).Order("created_at desc").Find(&products)
 	if result.Error != nil {
 		return nil, result.Error
 	}
