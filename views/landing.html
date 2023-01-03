@@ -178,7 +178,7 @@
 				<!-- lastest review container -->
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-5">
 					<!-- card -->
-					{% if reviews != nil && len(reviews) != 0 %}
+					{% if reviews|length != 0 %}
 						{% for review in reviews %}
 						<div
 							class="rounded-md p-5 border border-slate-300 hover:border-orange-400 hover:shadow-orange-400 hover:shadow-md duration-500 transition-all"
@@ -263,28 +263,24 @@
 			<!-- end of lastest review container -->
 			<!-- pagination -->
 			<div class="w-full flex justify-center items-center mb-10">
-				<a href="" class="py-2 px-3 mx-1 bg-orange-400 text-white">
-					1
-				</a>
-				<a
-					href=""
-					class="py-2 px-3 mx-1 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white duration-500 transition-all"
-				>
-					2
-				</a>
-				<a
-					href=""
-					class="py-2 px-3 mx-1 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white duration-500 transition-all"
-				>
-					3
-				</a>
-				<span class="text-orange-400 mx-1">. . .</span>
-				<a
-					href=""
-					class="py-2 px-3 mx-1 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white duration-500 transition-all"
-				>
-					35
-				</a>
+				{% if pagination.PreviousPage > 0 %}
+					<a href="" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
+						<i class="fa-solid fa-left-long"></i>
+					</a>
+				{% else %}
+					<span class="py-2 px-3 mx-1 bg-orange-300 rounded text-white">
+						<i class="fa-solid fa-left-long"></i>
+					</span>
+				{% endif %}
+				{% if pagination.NextPage <=  pagination.MaxPage && pagination.NextPage > 0 %}
+					<a href="" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
+						<i class="fa-solid fa-right-long"></i>
+					</a>
+				{% else %}
+					<span class="py-2 px-3 mx-1 bg-orange-300 rounded text-white">
+						<i class="fa-solid fa-right-long"></i>
+					</span>
+				{% endif %}
 			</div>
 			<!-- end of pagination -->
 		</main>

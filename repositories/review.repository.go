@@ -28,7 +28,7 @@ func (r *reviewRepository) CreateReviews(c context.Context, reviews []model.Revi
 	return nil
 }
 
-func (r *reviewRepository) GetTotalReview(c context.Context, filter []model.Review) int64 {
+func (r *reviewRepository) GetTotalReview(c context.Context, filter model.Review) int64 {
 	result := int64(0)
 	var review model.Review
 	r.conn.WithContext(c).Model(&review).Where(&filter).Count(&result)
@@ -46,7 +46,14 @@ func (r *reviewRepository) GetReviewByID(c context.Context, id uint) (model.Revi
 
 func (r *reviewRepository) GetReviews(c context.Context, limit int, skip int, filter model.Review) ([]model.Review, error) {
 	var reviews []model.Review
-	result := r.conn.WithContext(c).Joins("Product").Joins("User").Where(&filter).Offset(skip).Limit(limit).Order("age desc, name").Find(&reviews)
+	result := r.conn.WithContext(c).
+		Joins("Product").
+		Joins("User").
+		Where(&filter).
+		Offset(skip).
+		Limit(limit).
+		Order("created_at desc").
+		Find(&reviews)
 	if result.Error != nil {
 		return nil, result.Error
 	}

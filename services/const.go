@@ -1,9 +1,9 @@
 package service
 
 const (
-	productPerPage = 6
+	queryLimit = 6
 )
 
 func getOffset(page int) int {
-	return (page - 1) * productPerPage
+	return (page - 1) * queryLimit
 }

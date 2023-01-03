@@ -10,8 +10,8 @@ import (
 type ProductService interface {
 	CreateProduct(c context.Context, product entity.Product) error
 	GetProduct(c context.Context, id uint) (entity.Product, error)
-	GetAllProducts(c context.Context, page int) ([]entity.Product, error)
-	GetProductByFilter(c context.Context, page int, filter entity.Product) ([]entity.Product, error)
+	GetAllProducts(c context.Context, page int) ([]entity.Product, entity.Pagination, error)
+	GetProductByFilter(c context.Context, page int, filter entity.Product) ([]entity.Product, entity.Pagination, error)
 	UpdateProduct(c context.Context, id uint, updatedProduct entity.Product) error
 	DeleteProduct(c context.Context, id uint) error
 }

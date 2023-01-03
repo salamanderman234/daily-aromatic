@@ -49,10 +49,12 @@ func main() {
 	// // dependecies inject
 	// // repo
 	productRepo := repository.NewProductRepository(conn)
+	reviewRepo := repository.NewReviewRepostory(conn)
 	// // service
 	productServ := service.NewProductService(productRepo)
+	reviewServ := service.NewReviewService(reviewRepo)
 	// handler
-	userViewHandler := handler.NewUserViewHandler(productServ)
+	userViewHandler := handler.NewUserViewHandler(productServ, reviewServ)
 	// route
 	var routeList []domain.Route
 	routeList = append(routeList, route.NewUserViewRoute(mux, userViewHandler))

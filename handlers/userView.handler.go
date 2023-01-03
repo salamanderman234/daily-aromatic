@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/flosch/pongo2/v6"
@@ -15,38 +16,47 @@ type userViewHandler struct {
 	// userService         domain.UserService
 	productService domain.ProductService
 	// notificationService domain.NotificationService
-	// reviewService       domain.ReviewService
+	reviewService domain.ReviewService
 }
 
 func NewUserViewHandler(
 	// u domain.UserService,
 	p domain.ProductService,
 	// n domain.NotificationService,
-	// r domain.ReviewService,
+	r domain.ReviewService,
 ) domain.UserViewHandler {
 	return &userViewHandler{
 		// userService:         u,
 		productService: p,
 		// notificationService: n,
-		// reviewService:       r,
+		reviewService: r,
 	}
 }
 
 func (u *userViewHandler) PageLanding(c echo.Context) error {
 	data := pongo2.Context{}
 	statusCode := http.StatusOK
+	// get page
+	pageString := c.QueryParam("page")
+	page, _ := strconv.Atoi(pageString)
+	if page <= 0 {
+		page = 1
+	}
+	// calling service
+	reviews, pagination, err := u.reviewService.GetAllReviews(c.Request().Context(), page)
+	if err != nil {
+		statusCode = http.StatusInternalServerError
+		data["status_code"] = statusCode
+		data["err"] = err.Error()
+		data["message"] = "Internal Server Error"
 
-	// reviews, err := u.reviewService.GetAllReviews()
-	// if err != nil {
-	// 	statusCode = http.StatusInternalServerError
-	// 	data["status_code"] = statusCode
-	// 	data["message"] = "Internal Server Error"
-
-	// 	return c.Render(http.StatusInternalServerError, config.FromViews("/error.html"), data)
-	// }
+		return c.Render(http.StatusInternalServerError, config.FromViews("/error.html"), data)
+	}
+	// send html with data
 	statusCode = http.StatusOK
-	// data["reviews"] = reviews
+	data["reviews"] = reviews
 	data["user"] = c.Get("user")
+	data["pagination"] = pagination
 	return c.Render(statusCode, config.FromViews("/landing.html"), data)
 }
 func (u *userViewHandler) PageLogin(c echo.Context) error {
