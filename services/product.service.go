@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/salamanderman234/daily-aromatic/domain"
@@ -18,12 +19,12 @@ func NewProductService(p domain.ProductRepository) domain.ProductService {
 	}
 }
 
-func (p *productService) CreateProduct(product entity.Product) error {
+func (p *productService) CreateProduct(c context.Context, product entity.Product) error {
 	var productModel model.Product
 	temp, _ := json.Marshal(product)
 	json.Unmarshal(temp, &productModel)
 
-	err := p.repo.CreateProducts([]model.Product{
+	err := p.repo.CreateProducts(c, []model.Product{
 		productModel,
 	})
 	if err != nil {
@@ -32,21 +33,9 @@ func (p *productService) CreateProduct(product entity.Product) error {
 
 	return nil
 }
-func (p *productService) CreateProductBatch(products []entity.Product) error {
-	var productsModel []model.Product
-	temp, _ := json.Marshal(products)
-	json.Unmarshal(temp, &productsModel)
-
-	err := p.repo.CreateProducts(productsModel)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (p *productService) GetProduct(id uint) (entity.Product, error) {
+func (p *productService) GetProduct(c context.Context, id uint) (entity.Product, error) {
 	var productEntity entity.Product
-	product, err := p.repo.GetProductByID(id)
+	product, err := p.repo.GetProductByID(c, id)
 
 	if err != nil {
 		return entity.Product{}, err
@@ -57,9 +46,9 @@ func (p *productService) GetProduct(id uint) (entity.Product, error) {
 
 	return productEntity, nil
 }
-func (p *productService) GetAllProducts(page int) ([]entity.Product, error) {
+func (p *productService) GetAllProducts(c context.Context, page int) ([]entity.Product, error) {
 	var productsEntity []entity.Product
-	products, err := p.repo.GetProducts(0, 0, model.Product{})
+	products, err := p.repo.GetProducts(c, 0, 0, model.Product{})
 	if err != nil {
 		return nil, err
 	}
@@ -69,15 +58,12 @@ func (p *productService) GetAllProducts(page int) ([]entity.Product, error) {
 
 	return productsEntity, nil
 }
-func (p *productService) GetAllProductsWithReview(page int) ([]entity.Product, error) {
-	return nil, nil
-}
-func (p *productService) GetProductByFilter(page int, filter entity.Product) ([]entity.Product, error) {
+func (p *productService) GetProductByFilter(c context.Context, page int, filter entity.Product) ([]entity.Product, error) {
 	var filterModel model.Product
 	temp, _ := json.Marshal(filter)
 	json.Unmarshal(temp, &filterModel)
 
-	products, err := p.repo.GetProducts(0, 0, filterModel)
+	products, err := p.repo.GetProducts(c, 0, 0, filterModel)
 	if err != nil {
 		return nil, err
 	}
@@ -88,20 +74,20 @@ func (p *productService) GetProductByFilter(page int, filter entity.Product) ([]
 
 	return productsModel, nil
 }
-func (p *productService) UpdateProduct(id uint, updatedProduct entity.Product) error {
+func (p *productService) UpdateProduct(c context.Context, id uint, updatedProduct entity.Product) error {
 	var updateModel model.Product
 	temp, _ := json.Marshal(updatedProduct)
 	json.Unmarshal(temp, &updateModel)
 
-	err := p.repo.UpdateProduct(id, updateModel)
+	err := p.repo.UpdateProduct(c, id, updateModel)
 	if err != nil {
 		return err
 	}
 	return nil
 
 }
-func (p *productService) DeleteProduct(id uint) error {
-	err := p.repo.DeleteProduct(id)
+func (p *productService) DeleteProduct(c context.Context, id uint) error {
+	err := p.repo.DeleteProduct(c, id)
 	if err != nil {
 		return err
 	}

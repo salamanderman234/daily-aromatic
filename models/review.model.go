@@ -6,8 +6,8 @@ import (
 
 type Review struct {
 	gorm.Model
-	ProductID uint    `json:"-"`
-	UserID    uint    `json:"-"`
+	ProductID uint    `json:"product_id"`
+	UserID    uint    `json:"user_id"`
 	Product   Product `json:"product" gorm:"foreignKey:ProductID;references:ID"`
 	User      User    `json:"user" gorm:"foreignKey:UserID;references:ID"`
 	Rate      float64 `json:"rate"`

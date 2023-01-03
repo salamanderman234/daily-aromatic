@@ -32,6 +32,10 @@ func main() {
 		panic(err)
 	}
 
+	// // connect redis
+	// rdb := config.ConnectToRedis()
+	// fmt.Println(rdb)
+
 	// set templating engine
 	tplExample := utility.Renderer{Debug: true}
 	// set echo mux

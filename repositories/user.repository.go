@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
 	"gorm.io/gorm"
@@ -18,46 +20,46 @@ func NewUserRepository(c *gorm.DB) domain.UserRepository {
 	}
 }
 
-func (u *userRepository) CreateUser(user model.User) error {
-	result := u.conn.Create(&user)
+func (u *userRepository) CreateUser(c context.Context, user model.User) error {
+	result := u.conn.WithContext(c).Create(&user)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
-func (u *userRepository) UpdateUser(id uint, updatedField model.User) error {
+func (u *userRepository) UpdateUser(c context.Context, id uint, updatedField model.User) error {
 	user := model.User{}
-	result := u.conn.Model(&user).Where("id = ?", id).Updates(updatedField)
+	result := u.conn.WithContext(c).Model(&user).Where("id = ?", id).Updates(updatedField)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
-func (u *userRepository) GetUserByID(id uint) (model.User, error) {
+func (u *userRepository) GetUserByID(c context.Context, id uint) (model.User, error) {
 	user := model.User{}
-	result := u.conn.Where("id = ?").First(&user)
+	result := u.conn.WithContext(c).Where("id = ?").First(&user)
 	if result.Error != nil {
 		return user, result.Error
 	}
 	return user, nil
 }
 
-func (u *userRepository) GetUserByIDWithReviews(id uint) (model.User, error) {
+func (u *userRepository) GetUserByIDWithReviews(c context.Context, id uint) (model.User, error) {
 	user := model.User{}
-	result := u.conn.Preload("Reviews").Where("id = ?").First(&user)
+	result := u.conn.WithContext(c).Preload("Reviews").Where("id = ?").First(&user)
 	if result.Error != nil {
 		return user, result.Error
 	}
 	return user, nil
 }
 
-func (u *userRepository) GetUserByCred(username string, pass string) (model.User, bool, error) {
+func (u *userRepository) GetUserByCred(c context.Context, username string, pass string) (model.User, bool, error) {
 	cred := model.User{
 		Username: username,
 		Password: pass,
 	}
 	user := model.User{}
-	result := u.conn.Where(&cred).First(&user)
+	result := u.conn.WithContext(c).Where(&cred).First(&user)
 	if result.Error != nil {
 		return user, false, result.Error
 	}

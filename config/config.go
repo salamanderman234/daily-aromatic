@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -31,4 +32,21 @@ func ConnectToDatabase() (*gorm.DB, error) {
 	}
 
 	return conn, nil
+}
+
+func ConnectToRedis() *redis.Client {
+	user := viper.GetString("redis.username")
+	passwd := viper.GetString("redis.password")
+	host := viper.GetString("redis.host")
+	port := viper.GetInt("redis.port")
+
+	rdb := redis.NewClient(
+		&redis.Options{
+			Addr:     fmt.Sprintf("%s:%d", host, port),
+			Username: user,
+			Password: passwd,
+		},
+	)
+
+	return rdb
 }
