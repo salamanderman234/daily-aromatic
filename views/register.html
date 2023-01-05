@@ -27,27 +27,8 @@
 				<h1 class="text-slate-700 mt-2 font-bold text-2xl text-center">
 					Register
 				</h1>
-				<form action="" class="mt-10">
-					<div class="flex">
-						<div
-							class="rounded-l-md bg-orange-400 text-white w-10 py-1 flex items-center justify-center"
-						>
-							<i class="fa-solid fa-envelope"></i>
-						</div>
-						<input
-							class="border border-orange-400 rounded-r-md h-10 px-3 w-60 !outline-none"
-							type="text"
-							name="email"
-							placeholder="Email"
-						/>
-					</div>
-					{% if error != nil %}
-						{% if error.EmailError != "" %}
-							<div class="flex justify-end text-sm text-red-500">
-								<span>*{{ error.EmailError }}</span>
-							</div>
-						{% endif %}
-					{% endif %}
+				<form action="/register" class="mt-10" method="POST">
+					
 					<div class="flex mt-2">
 						<div
 							class="rounded-l-md bg-orange-400 text-white w-10 py-1 flex items-center justify-center"
@@ -97,7 +78,7 @@
 						<input
 							class="border border-orange-400 rounded-r-md h-10 px-3 w-60 !outline-none"
 							type="password"
-							name="repassword"
+							name="confirm_password"
 							placeholder="Confirm Password"
 						/>
 					</div>

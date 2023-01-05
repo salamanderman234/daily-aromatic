@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	constanta "github.com/salamanderman234/daily-aromatic/constanta"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
 	"gorm.io/gorm"
@@ -71,13 +71,13 @@ func (u *userRepository) GetUserByCred(c context.Context, username string, pass 
 
 func (u *userRepository) GetuserByUsername(c context.Context, username string) (model.User, error) {
 	user := model.User{}
-	result := u.conn.WithContext(c).Preload("Reviews").Where("username = ?", username).First(&user)
+	result := u.conn.WithContext(c).Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return user, constanta.UserDataNotFoundWithCreds
+		fmt.Println(result.Error)
+		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return user, result.Error
 		}
-		return user, result.Error
 	}
 	return user, nil
 }

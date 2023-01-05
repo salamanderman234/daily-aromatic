@@ -93,9 +93,7 @@ func (u *userViewHandler) PageLogin(c echo.Context) error {
 		)
 	}
 
-	if credError.UsernameError != "" || credError.PasswordError != "" {
-		data["error"] = credError
-	}
+	data["error"] = credError
 
 	return c.Render(statusCode, config.FromViews("/login.html"), data)
 }
@@ -105,15 +103,6 @@ func (u *userViewHandler) PageRegister(c echo.Context) error {
 	statusCode := http.StatusOK
 
 	// checking cookie error data if there any
-	email_error, _ := c.Cookie("email_error")
-	if email_error != nil {
-		registerCredError.EmailError = email_error.Value
-		email_error.Expires = time.Unix(0, 0)
-		email_error.MaxAge = -1
-		c.SetCookie(
-			email_error,
-		)
-	}
 	user_error, _ := c.Cookie("user_error")
 	if user_error != nil {
 		registerCredError.UsernameError = user_error.Value
@@ -133,7 +122,7 @@ func (u *userViewHandler) PageRegister(c echo.Context) error {
 		)
 	}
 	confirm_pass_error, _ := c.Cookie("confirm_pass_error")
-	if pass_error != nil {
+	if confirm_pass_error != nil {
 		registerCredError.ConfirmPasswordError = confirm_pass_error.Value
 		confirm_pass_error.Expires = time.Unix(0, 0)
 		confirm_pass_error.MaxAge = -1
@@ -142,11 +131,7 @@ func (u *userViewHandler) PageRegister(c echo.Context) error {
 		)
 	}
 
-	// if obj is filled then set error on data
-	if registerCredError.EmailError != "" || registerCredError.UsernameError != "" || registerCredError.PasswordError != "" || registerCredError.ConfirmPasswordError != "" {
-		data["error"] = registerCredError
-	}
-
+	data["error"] = registerCredError
 	return c.Render(statusCode, config.FromViews("/register.html"), data)
 }
 func (u *userViewHandler) PageProductSearch(c echo.Context) error {

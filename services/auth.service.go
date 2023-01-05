@@ -25,7 +25,7 @@ func (a *authService) Login(c context.Context, username string, password string)
 	if err != nil {
 		return "", err
 	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
