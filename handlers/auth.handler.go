@@ -40,7 +40,7 @@ func (a *authHandler) LoginProcess(c echo.Context) error {
 		data["status_code"] = statusCode
 		return c.Render(statusCode, config.FromViews("/error.html"), data)
 	}
-	// if username or password is empty
+	// cred validation
 	isValid, credError := creds.Check()
 	if !isValid {
 		for _, cookie := range credError.ErrorCookies {
