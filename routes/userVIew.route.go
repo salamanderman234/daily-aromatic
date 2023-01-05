@@ -19,10 +19,11 @@ func NewUserViewRoute(r *echo.Echo, h domain.UserViewHandler) domain.Route {
 }
 
 func (u *userViewRoute) Register() {
-	group := u.router.Group("/")
+	// group := u.router.Group("/")
 	groupWithToken := u.router.Group("/", middleware.WithToken)
+	groupGuest := u.router.Group("/", middleware.MustGuest)
 	// add path
 	groupWithToken.GET("", u.handler.PageLanding)
-	group.GET("login", u.handler.PageLogin)
-	group.GET("register", u.handler.PageRegister)
+	groupGuest.GET("login", u.handler.PageLogin)
+	groupGuest.GET("register", u.handler.PageRegister)
 }

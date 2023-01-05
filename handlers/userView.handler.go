@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -46,7 +45,6 @@ func (u *userViewHandler) PageLanding(c echo.Context) error {
 	// get user data login
 	username := c.Get("username")
 	profilePic := c.Get("profile_pic")
-	fmt.Println(username)
 	if username != nil {
 		data["username"] = username
 	}
