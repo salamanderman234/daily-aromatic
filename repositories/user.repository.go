@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"errors"
 
+	constanta "github.com/salamanderman234/daily-aromatic/constanta"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
 	"gorm.io/gorm"
@@ -20,12 +22,12 @@ func NewUserRepository(c *gorm.DB) domain.UserRepository {
 	}
 }
 
-func (u *userRepository) CreateUser(c context.Context, user model.User) error {
+func (u *userRepository) CreateUser(c context.Context, user model.User) (model.User, error) {
 	result := u.conn.WithContext(c).Create(&user)
 	if result.Error != nil {
-		return result.Error
+		return model.User{}, result.Error
 	}
-	return nil
+	return user, nil
 }
 func (u *userRepository) UpdateUser(c context.Context, id uint, updatedField model.User) error {
 	user := model.User{}
@@ -37,7 +39,7 @@ func (u *userRepository) UpdateUser(c context.Context, id uint, updatedField mod
 }
 func (u *userRepository) GetUserByID(c context.Context, id uint) (model.User, error) {
 	user := model.User{}
-	result := u.conn.WithContext(c).Where("id = ?").First(&user)
+	result := u.conn.WithContext(c).Where("id = ?", id).First(&user)
 	if result.Error != nil {
 		return user, result.Error
 	}
@@ -46,7 +48,7 @@ func (u *userRepository) GetUserByID(c context.Context, id uint) (model.User, er
 
 func (u *userRepository) GetUserByIDWithReviews(c context.Context, id uint) (model.User, error) {
 	user := model.User{}
-	result := u.conn.WithContext(c).Preload("Reviews").Where("id = ?").First(&user)
+	result := u.conn.WithContext(c).Preload("Reviews").Where("id = ?", id).First(&user)
 	if result.Error != nil {
 		return user, result.Error
 	}
@@ -65,4 +67,17 @@ func (u *userRepository) GetUserByCred(c context.Context, username string, pass 
 	}
 
 	return user, true, nil
+}
+
+func (u *userRepository) GetuserByUsername(c context.Context, username string) (model.User, error) {
+	user := model.User{}
+	result := u.conn.WithContext(c).Preload("Reviews").Where("username = ?", username).First(&user)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return user, constanta.UserDataNotFoundWithCreds
+		}
+		return user, result.Error
+	}
+	return user, nil
 }

@@ -1,8 +1,10 @@
 package entity
 
+import "github.com/golang-jwt/jwt/v4"
+
 type Credentials struct {
-	Username string
-	Password string
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type CredentialsError struct {
@@ -22,4 +24,11 @@ type RegisterCredError struct {
 	UsernameError        string
 	PasswordError        string
 	ConfirmPasswordError string
+}
+
+type JWTClaims struct {
+	ID         uint   `json:"id"`
+	Username   string `json:"username"`
+	ProfilePic string `json:"profile_pic"`
+	jwt.RegisteredClaims
 }

@@ -27,7 +27,7 @@
 				<h1 class="text-slate-700 mt-2 font-bold text-2xl text-center">
 					Login
 				</h1>
-				<form action="/login/process" class="mt-10" method="POST">
+				<form action="/login" class="mt-10" method="POST">
 					<div class="flex">
 						<div
 							class="rounded-l-md bg-orange-400 text-white w-10 py-1 flex items-center justify-center"
@@ -44,7 +44,7 @@
 					</div>
 					{% if error != nil %}
 						{% if error.UsernameError != "" %}
-							<div class="flex justify-end text-sm text-red-500">
+							<div class="flex justify-end text-xs text-red-500">
 								<span>*{{ error.UsernameError }}</span>
 							</div>
 						{% endif %}
@@ -65,7 +65,7 @@
 					</div>
 					{% if error != nil %}
 						{% if error.PasswordError != "" %}
-							<div class="flex justify-end text-sm text-red-500">
+							<div class="flex justify-end text-xs text-red-500">
 								<span>*{{ error.PasswordError }}</span>
 							</div>
 						{% endif %}

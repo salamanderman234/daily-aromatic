@@ -9,3 +9,8 @@ type UserViewHandler interface {
 	PageProductSearch(c echo.Context) error
 	PageUserProfile(c echo.Context) error
 }
+
+type AuthHandler interface {
+	LoginProcess(c echo.Context) error
+	RegisterProcess(c echo.Context) error
+}

@@ -67,10 +67,20 @@ func (u *userViewHandler) PageLogin(c echo.Context) error {
 	user_error, _ := c.Cookie("user_error")
 	if user_error != nil {
 		credError.UsernameError = user_error.Value
+		user_error.Expires = time.Unix(0, 0)
+		user_error.MaxAge = -1
+		c.SetCookie(
+			user_error,
+		)
 	}
 	pass_error, _ := c.Cookie("pass_error")
 	if pass_error != nil {
 		credError.PasswordError = pass_error.Value
+		pass_error.Expires = time.Unix(0, 0)
+		pass_error.MaxAge = -1
+		c.SetCookie(
+			pass_error,
+		)
 	}
 
 	if credError.UsernameError != "" || credError.PasswordError != "" {

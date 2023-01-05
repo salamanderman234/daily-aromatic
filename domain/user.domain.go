@@ -10,13 +10,14 @@ import (
 type UserService interface {
 	CreateUser(c context.Context, user entity.User) error
 	UpdateUser(c context.Context, id uint, updatedField entity.User) error
-	GetUser(c context.Context, username string, pass string) (entity.User, bool, error)
-	GetUserReviews(c context.Context, id uint) ([]entity.Review, error)
+	GetUser(c context.Context, username string) (entity.User, bool, error)
 }
 
 type UserRepository interface {
-	CreateUser(c context.Context, user model.User) error
+	CreateUser(c context.Context, user model.User) (model.User, error)
 	UpdateUser(c context.Context, id uint, updatedField model.User) error
 	GetUserByID(c context.Context, id uint) (model.User, error)
+	GetuserByUsername(c context.Context, username string) (model.User, error)
+	GetUserByIDWithReviews(c context.Context, id uint) (model.User, error)
 	GetUserByCred(c context.Context, username string, pass string) (model.User, bool, error)
 }

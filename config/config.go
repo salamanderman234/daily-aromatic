@@ -50,3 +50,7 @@ func ConnectToRedis() *redis.Client {
 
 	return rdb
 }
+
+func GetJWTSecret() string {
+	return viper.GetString("jwt_secret")
+}

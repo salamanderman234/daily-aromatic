@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type Product struct {
 	gorm.Model
+	ImageUrl     string   `json:"image_url"`
 	Nama         string   `json:"nama"`
 	Pabrikan     string   `json:"pabrikan"`
 	Warna        string   `json:"warna"`

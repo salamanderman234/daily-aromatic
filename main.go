@@ -50,14 +50,19 @@ func main() {
 	// // repo
 	productRepo := repository.NewProductRepository(conn)
 	reviewRepo := repository.NewReviewRepostory(conn)
+	userRepo := repository.NewUserRepository(conn)
 	// // service
 	productServ := service.NewProductService(productRepo)
 	reviewServ := service.NewReviewService(reviewRepo)
+	authServ := service.NewAuthService(userRepo)
 	// handler
 	userViewHandler := handler.NewUserViewHandler(productServ, reviewServ)
+	authHandler := handler.NewAuthHandler(authServ)
 	// route
-	var routeList []domain.Route
-	routeList = append(routeList, route.NewUserViewRoute(mux, userViewHandler))
+	routeList := []domain.Route{
+		route.NewUserViewRoute(mux, userViewHandler),
+		route.NewAuthRoute(mux, authHandler),
+	}
 
 	for _, route := range routeList {
 		route.Register()
