@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/salamanderman234/daily-aromatic/domain"
+	middleware "github.com/salamanderman234/daily-aromatic/middlewares"
 )
 
 type userViewRoute struct {
@@ -19,9 +20,9 @@ func NewUserViewRoute(r *echo.Echo, h domain.UserViewHandler) domain.Route {
 
 func (u *userViewRoute) Register() {
 	group := u.router.Group("/")
-
+	groupWithToken := u.router.Group("/", middleware.WithToken)
 	// add path
-	group.GET("", u.handler.PageLanding)
+	groupWithToken.GET("", u.handler.PageLanding)
 	group.GET("login", u.handler.PageLogin)
 	group.GET("register", u.handler.PageRegister)
 }

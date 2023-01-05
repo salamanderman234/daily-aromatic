@@ -30,20 +30,20 @@ func CreateJWT(user model.User) (string, error) {
 }
 
 func JWTValidation(token string) (*entity.JWTClaims, error) {
-	claims := entity.JWTClaims{}
+	claims := &entity.JWTClaims{}
 	tkn, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.GetJWTSecret()), nil
 	})
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenSignatureInvalid) {
-			return &claims, constanta.TokenInvalid
+			return claims, constanta.TokenInvalid
 		}
-		return &claims, err
+		return claims, err
 	}
 
 	if !tkn.Valid {
-		return &claims, constanta.TokenExpired
+		return claims, constanta.TokenExpired
 	}
 
-	return &claims, nil
+	return claims, nil
 }

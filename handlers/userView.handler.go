@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -42,6 +43,16 @@ func (u *userViewHandler) PageLanding(c echo.Context) error {
 	if page <= 0 {
 		page = 1
 	}
+	// get user data login
+	username := c.Get("username")
+	profilePic := c.Get("profile_pic")
+	fmt.Println(username)
+	if username != nil {
+		data["username"] = username
+	}
+	if profilePic != nil {
+		data["profile"] = profilePic
+	}
 	// calling service
 	reviews, pagination, err := u.reviewService.GetAllReviews(c.Request().Context(), page)
 	if err != nil {
@@ -57,6 +68,7 @@ func (u *userViewHandler) PageLanding(c echo.Context) error {
 	data["reviews"] = reviews
 	data["user"] = c.Get("user")
 	data["pagination"] = pagination
+
 	return c.Render(statusCode, config.FromViews("/landing.html"), data)
 }
 func (u *userViewHandler) PageLogin(c echo.Context) error {
