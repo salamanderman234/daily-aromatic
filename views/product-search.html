@@ -35,7 +35,7 @@
 					>
 				</a>
 				<!-- logo -->
-				<form action="" class="flex justify-center items-center">
+				<form action="/product/search" class="flex justify-center items-center">
 					<input name="keyword" type="text" class="h-10 w-44 md:w-60 rounded-l-full !outline-none pl-5 text-slate-500 text-sm" placeholder="Nama produk atau nama pabrik">
 					<button type="submit" class="h-10 bg-white rounded-r-full text-slate-500 px-5 flex items-center">
 						<i class="fa-sharp fa-solid fa-magnifying-glass"></i>
@@ -107,7 +107,7 @@
 						{% endif %}
 						<li class="flex items-center">
 							<a
-								href="#"
+								href="/product/search"
 								class="block py-2 pl-3 pr-4 rounded md:p-0 font-semibold hover:text-slate-300 transition-all duration-500"
 								>Produk</a
 							>
@@ -131,7 +131,11 @@
 				<div class="w-fit">
 					<!-- sub (review terakhir) -->
 					<h2 class="text-2xl md:text-3xl font-bold text-slate-700">
-						Hasil Dari "{{ keyword }}"
+						{% if keyword == "" %}
+							Seluruh Produk
+						{% else %}
+							Hasil Dari Keyword "{{ keyword }}"
+						{% endif %}
 					</h2>
 					<!-- end of sub -->
 					<hr
@@ -214,7 +218,7 @@
 			<!-- pagination -->
 			<div class="w-full flex justify-center items-center mb-10">
 				{% if pagination.PreviousPage > 0 %}
-					<a href="/search?keyword={{ keyword }}&page={{ pagination.PreviousPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
+					<a href="/product/search?keyword={{ keyword }}&page={{ pagination.PreviousPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
 						<i class="fa-solid fa-left-long"></i>
 					</a>
 				{% else %}
@@ -224,7 +228,7 @@
 				{% endif %}
 				
 				{% if pagination.NextPage <=  pagination.MaxPage && pagination.NextPage > 0 %}
-					<a href="/search?keyword={{ keyword }}&page={{ pagination.NextPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
+					<a href="/product/search?keyword={{ keyword }}&page={{ pagination.NextPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
 						<i class="fa-solid fa-right-long"></i>
 					</a>
 				{% else %}
