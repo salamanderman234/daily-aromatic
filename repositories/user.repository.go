@@ -7,6 +7,7 @@ import (
 
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -23,6 +24,11 @@ func NewUserRepository(c *gorm.DB) domain.UserRepository {
 }
 
 func (u *userRepository) CreateUser(c context.Context, user model.User) (model.User, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return model.User{}, err
+	}
+	user.Password = string(hashedPassword)
 	result := u.conn.WithContext(c).Create(&user)
 	if result.Error != nil {
 		return model.User{}, result.Error

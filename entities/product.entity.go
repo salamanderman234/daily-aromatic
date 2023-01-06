@@ -2,6 +2,7 @@ package entity
 
 type Product struct {
 	ID           uint     `json:"id" params:"id"`
+	ImageUrl     string   `json:"image_url"`
 	Nama         string   `json:"nama"`
 	Pabrikan     string   `json:"pabrikan"`
 	Warna        string   `json:"warna"`

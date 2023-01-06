@@ -55,15 +55,15 @@ func (p *productRepository) GetProducts(c context.Context, limit int, skip int, 
 	result := p.conn.WithContext(c).
 		Where(&model.Product{Pabrikan: filter.Pabrikan}).
 		Or(&model.Product{Aroma: filter.Aroma}).
-		Or(&model.Product{Nama: filter.Nama}).
+		Or("nama like ?", "%"+filter.Nama+"%").
 		Offset(skip).
 		Limit(limit).
 		Order("created_at desc").
 		Find(&products)
+
 	if result.Error != nil {
 		return nil, result.Error
 	}
-
 	return products, nil
 }
 func (p *productRepository) UpdateProduct(c context.Context, id uint, updatedField model.Product) error {

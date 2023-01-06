@@ -24,6 +24,7 @@ func (u *userViewRoute) Register() {
 	groupGuest := u.router.Group("/", middleware.MustGuest)
 	// add path
 	groupWithToken.GET("", u.handler.PageLanding)
+	groupWithToken.GET("search", u.handler.PageProductSearch)
 	groupGuest.GET("login", u.handler.PageLogin)
 	groupGuest.GET("register", u.handler.PageRegister)
 }

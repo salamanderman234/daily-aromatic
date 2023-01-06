@@ -62,9 +62,8 @@ func (u *userViewHandler) PageLanding(c echo.Context) error {
 		return c.Render(http.StatusInternalServerError, config.FromViews("/error.html"), data)
 	}
 	// send html with data
-	statusCode = http.StatusOK
 	data["reviews"] = reviews
-	data["user"] = c.Get("user")
+	// data["user"] = c.Get("user")
 	data["pagination"] = pagination
 
 	return c.Render(statusCode, config.FromViews("/landing.html"), data)
@@ -135,10 +134,43 @@ func (u *userViewHandler) PageRegister(c echo.Context) error {
 	return c.Render(statusCode, config.FromViews("/register.html"), data)
 }
 func (u *userViewHandler) PageProductSearch(c echo.Context) error {
-	var data pongo2.Context
+	data := pongo2.Context{}
 	statusCode := http.StatusOK
-	return c.Render(statusCode, config.FromViews("/register.html"), data)
+	page := 1
+	// get params
+	keyword := c.QueryParam("keyword")
+	page, _ = strconv.Atoi(c.QueryParam("page"))
+	// makin filter
+	filter := entity.Product{
+		Nama:     keyword,
+		Pabrikan: keyword,
+		Aroma:    keyword,
+	}
+	// calling serv
+	result, pagination, err := u.productService.GetProductByFilter(c.Request().Context(), page, filter)
+	if err != nil {
+		statusCode = http.StatusInternalServerError
+		data["status_code"] = statusCode
+		data["err"] = err.Error()
+		data["message"] = "Internal Server Error"
+		return c.Render(http.StatusInternalServerError, config.FromViews("/error.html"), data)
+	}
+	// assigning data to view
+	data["products"] = result
+	// get user data login
+	username := c.Get("username")
+	profilePic := c.Get("profile_pic")
+	if username != nil {
+		data["username"] = username
+	}
+	if profilePic != nil {
+		data["profile"] = profilePic
+	}
+	data["pagination"] = pagination
+	data["keyword"] = keyword
+	return c.Render(statusCode, config.FromViews("/product-search.html"), data)
 }
+
 func (u *userViewHandler) PageUserProfile(c echo.Context) error {
 	var data pongo2.Context
 	statusCode := http.StatusOK

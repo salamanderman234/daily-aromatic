@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"math"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/salamanderman234/daily-aromatic/domain"
@@ -65,7 +67,7 @@ func (p *productService) GetAllProducts(c context.Context, page int) ([]entity.P
 		CurrentPage:  page,
 		NextPage:     page + 1,
 		PreviousPage: page - 1,
-		MaxPage:      int(maxPage),
+		MaxPage:      int(math.Ceil(float64(maxPage) / float64(limit))),
 	}
 	// to entity
 	temp, _ := json.Marshal(products)
@@ -78,21 +80,31 @@ func (p *productService) GetProductByFilter(c context.Context, page int, filter 
 	var filterModel model.Product
 	temp, _ := json.Marshal(filter)
 	json.Unmarshal(temp, &filterModel)
-	limit := queryLimit
-	offset := getOffset(page)
+	limit := searchLimit
+	offset := getSarchOffset(page)
+	// check if page exists
+	maxPage := p.repo.GetProductTotal(c, model.Product{})
+	pageMax := int(math.Ceil(float64(maxPage) / float64(limit)))
+	if maxPage == 0 {
+		maxPage = 1
+	}
+	if page > pageMax {
+		return nil, entity.Pagination{}, errors.New("not found")
+	}
+	if page == 0 {
+		page = 1
+	}
 	// calling repo
 	products, err := p.repo.GetProducts(c, limit, offset, filterModel)
 	if err != nil {
 		return nil, entity.Pagination{}, err
 	}
-
-	// creating pagination obj
-	maxPage := p.repo.GetProductTotal(c, filterModel)
+	// creating pagination
 	pagination := entity.Pagination{
 		CurrentPage:  page,
 		NextPage:     page + 1,
 		PreviousPage: page - 1,
-		MaxPage:      int(maxPage),
+		MaxPage:      pageMax,
 	}
 	// convert model to entity
 	var productsModel []entity.Product

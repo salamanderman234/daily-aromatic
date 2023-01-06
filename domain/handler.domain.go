@@ -14,3 +14,7 @@ type AuthHandler interface {
 	LoginProcess(c echo.Context) error
 	RegisterProcess(c echo.Context) error
 }
+
+type SearchHandler interface {
+	ProductSearchProcess(c echo.Context) error
+}

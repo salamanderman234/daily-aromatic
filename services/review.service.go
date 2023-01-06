@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"math"
 
 	"github.com/salamanderman234/daily-aromatic/domain"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
@@ -42,10 +43,11 @@ func (r *reviewService) GetAllReviews(c context.Context, page int) ([]entity.Rev
 	offset := getOffset(page)
 	// check if page exists
 	maxPage := r.repo.GetTotalReview(c, model.Review{})
+	pageMax := int(math.Ceil(float64(maxPage) / float64(limit)))
 	if maxPage == 0 {
 		maxPage = 1
 	}
-	if page > int(maxPage) {
+	if page > pageMax {
 		return nil, entity.Pagination{}, errors.New("not found")
 	}
 	if page == 0 {
@@ -61,7 +63,7 @@ func (r *reviewService) GetAllReviews(c context.Context, page int) ([]entity.Rev
 		CurrentPage:  page,
 		NextPage:     page + 1,
 		PreviousPage: page - 1,
-		MaxPage:      int(maxPage),
+		MaxPage:      pageMax,
 	}
 	// to entity
 	temp, _ := json.Marshal(reviewsModel)

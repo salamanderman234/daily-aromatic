@@ -34,13 +34,9 @@ func (a *authService) Login(c context.Context, username string, password string)
 
 }
 func (a *authService) Register(c context.Context, username string, password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
 	user := model.User{
 		Username: username,
-		Password: string(hashedPassword),
+		Password: password,
 	}
 	resultUser, err := a.repo.CreateUser(c, user)
 	if err != nil {
