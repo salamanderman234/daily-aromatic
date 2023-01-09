@@ -35,7 +35,7 @@
 					>
 				</a>
 				<!-- logo -->
-				<form action="/product/search" class="flex justify-center items-center">
+				<form action="/products" class="flex justify-center items-center">
 					<input name="keyword" type="text" class="h-10 w-44 md:w-60 rounded-l-full !outline-none pl-5 text-slate-500 text-sm" placeholder="Nama produk atau nama pabrik">
 					<button type="submit" class="h-10 bg-white rounded-r-full text-slate-500 px-5 flex items-center">
 						<i class="fa-sharp fa-solid fa-magnifying-glass"></i>
@@ -107,7 +107,7 @@
 						{% endif %}
 						<li class="flex items-center">
 							<a
-								href="#"
+								href="/products"
 								class="block py-2 pl-3 pr-4 rounded md:p-0 font-semibold hover:text-slate-300 transition-all duration-500"
 								>Produk</a
 							>
@@ -163,7 +163,7 @@
 								/>
 								<div class="ml-5 flex flex-col">
 									<a
-										href=""
+										href="/products/{{ review.Product.ID }}"
 										class="font-bold text-lg hover:text-orange-400 truncate duration-500 transition-all"
 										>{{ review.Product.Nama }}</a
 									>

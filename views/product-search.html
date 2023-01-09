@@ -35,7 +35,7 @@
 					>
 				</a>
 				<!-- logo -->
-				<form action="/product/search" class="flex justify-center items-center">
+				<form action="/products" class="flex justify-center items-center">
 					<input name="keyword" type="text" class="h-10 w-44 md:w-60 rounded-l-full !outline-none pl-5 text-slate-500 text-sm" placeholder="Nama produk atau nama pabrik">
 					<button type="submit" class="h-10 bg-white rounded-r-full text-slate-500 px-5 flex items-center">
 						<i class="fa-sharp fa-solid fa-magnifying-glass"></i>
@@ -107,7 +107,7 @@
 						{% endif %}
 						<li class="flex items-center">
 							<a
-								href="/product/search"
+								href="/products"
 								class="block py-2 pl-3 pr-4 rounded md:p-0 font-semibold hover:text-slate-300 transition-all duration-500"
 								>Produk</a
 							>
@@ -148,14 +148,16 @@
 							<div
 							class="rounded-md p-5 border border-slate-300 hover:border-orange-400 hover:shadow-orange-400 hover:shadow-md duration-500 transition-all"
 						>
-							<img
+							<a href="/products/{{ product.ID }}">
+								<img
 								class="w-full bg-no-repeat bg-contain md:max-h-72"
 								src="{{ product.ImageUrl }}"
 								alt=""
 							/>
+							</a>
 							<hr class="my-4 border-slate-300" />
 							<div>
-								<a href="" class="">
+								<a href="/products/{{ product.ID }}" class="">
 									<h2
 										class="text-slate-700 hover:text-orange-400 text-center font-bold duration-500 transition-all"
 									>
@@ -218,7 +220,7 @@
 			<!-- pagination -->
 			<div class="w-full flex justify-center items-center mb-10">
 				{% if pagination.PreviousPage > 0 %}
-					<a href="/product/search?keyword={{ keyword }}&page={{ pagination.PreviousPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
+					<a href="/products?keyword={{ keyword }}&page={{ pagination.PreviousPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
 						<i class="fa-solid fa-left-long"></i>
 					</a>
 				{% else %}
@@ -228,7 +230,7 @@
 				{% endif %}
 				
 				{% if pagination.NextPage <=  pagination.MaxPage && pagination.NextPage > 0 %}
-					<a href="/product/search?keyword={{ keyword }}&page={{ pagination.NextPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
+					<a href="/products?keyword={{ keyword }}&page={{ pagination.NextPage }}" class="py-2 px-3 mx-1 bg-orange-400 rounded text-white">
 						<i class="fa-solid fa-right-long"></i>
 					</a>
 				{% else %}

@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"errors"
 
+	"github.com/salamanderman234/daily-aromatic/constanta"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
 	"gorm.io/gorm"
@@ -43,8 +45,18 @@ func (p *productRepository) GetProductTotal(c context.Context, filter model.Prod
 
 func (p *productRepository) GetProductByID(c context.Context, id uint) (model.Product, error) {
 	var product model.Product
-	result := p.conn.WithContext(c).Preload("Reviews").Where("id = ?", id).First(&product)
+	// preload only 10 reviews and preload any user that attach to review
+	result := p.conn.WithContext(c).
+		Preload("Reviews.User").
+		Preload("Reviews", func(tx *gorm.DB) *gorm.DB {
+			return tx.Limit(10)
+		}).
+		Where("id = ?", id).First(&product)
+
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return model.Product{}, constanta.ProductNotFound
+		}
 		return model.Product{}, result.Error
 	}
 	return product, nil

@@ -8,6 +8,7 @@ type UserViewHandler interface {
 	PageRegister(c echo.Context) error
 	PageProductSearch(c echo.Context) error
 	PageUserProfile(c echo.Context) error
+	ProductDetailPage(c echo.Context) error
 }
 
 type AuthHandler interface {
