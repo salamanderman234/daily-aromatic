@@ -4,11 +4,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/flosch/pongo2/v6"
 	"github.com/labstack/echo/v4"
 	"github.com/salamanderman234/daily-aromatic/config"
-	"github.com/salamanderman234/daily-aromatic/constanta"
 	utility "github.com/salamanderman234/daily-aromatic/utilities"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 func MustAuth(next echo.HandlerFunc) echo.HandlerFunc {
@@ -20,17 +19,15 @@ func MustAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		tokenStr := token.Value
 		claims, err := utility.JWTValidation(tokenStr)
 		if err != nil {
-			if errors.Is(err, constanta.TokenExpired) || errors.Is(err, constanta.TokenInvalid) {
+			if errors.Is(err, variable.ErrTokenExpired) || errors.Is(err, variable.ErrTokenNotValid) {
 				return c.Redirect(http.StatusFound, "/login")
 			}
-			statusCode := http.StatusInternalServerError
-			data := pongo2.Context{
-				"status_code": statusCode,
-				"message":     "Internal Server Error",
-			}
-			return c.Render(statusCode, config.FromViews("/error"), data)
+			statusCode, data, filename := utility.ErrorPageFactory(http.StatusInternalServerError)
+			return c.Render(statusCode, config.FromViews(filename), data)
 		}
-		c.Set("user_claims", claims)
+		c.Set("id", claims.ID)
+		c.Set("username", claims.Username)
+		c.Set("profile_pic", claims.ProfilePic)
 		return next(c)
 	}
 }

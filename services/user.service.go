@@ -13,7 +13,7 @@ type userService struct {
 	repo domain.UserRepository
 }
 
-func NewUserServce(r domain.UserRepository) domain.UserService {
+func NewUserService(r domain.UserRepository) domain.UserService {
 	return &userService{
 		repo: r,
 	}

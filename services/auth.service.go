@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
-	"github.com/salamanderman234/daily-aromatic/constanta"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
 	utility "github.com/salamanderman234/daily-aromatic/utilities"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -28,7 +28,7 @@ func (a *authService) Login(c context.Context, username string, password string)
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", constanta.UserDataNotFoundWithCreds
+		return "", variable.ErrUserCredsNotFound
 	}
 	return utility.CreateJWT(user)
 
@@ -53,7 +53,7 @@ func (a *authService) IsUsernameAlreadyExists(c context.Context, username string
 	}
 
 	if user.Username != "" {
-		return constanta.UsernameAlreadyExists
+		return variable.ErrMustUniqueUsername
 	}
 	return nil
 }

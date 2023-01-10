@@ -6,21 +6,19 @@ import (
 )
 
 type authRoute struct {
-	router  *echo.Echo
-	handler domain.AuthHandler
+	mustGuestGroup *echo.Group
+	handler        domain.AuthHandler
 }
 
-func NewAuthRoute(r *echo.Echo, h domain.AuthHandler) domain.Route {
+func NewAuthRoute(g *echo.Group, h domain.AuthHandler) domain.Route {
 	return &authRoute{
-		router:  r,
-		handler: h,
+		mustGuestGroup: g,
+		handler:        h,
 	}
 }
 
 func (u *authRoute) Register() {
-	group := u.router.Group("/")
-
 	// add path
-	group.POST("login", u.handler.LoginProcess)
-	group.POST("register", u.handler.RegisterProcess)
+	u.mustGuestGroup.POST("login", u.handler.LoginProcess)
+	u.mustGuestGroup.POST("register", u.handler.RegisterProcess)
 }

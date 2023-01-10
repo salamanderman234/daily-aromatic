@@ -11,6 +11,10 @@ type UserViewHandler interface {
 	ProductDetailPage(c echo.Context) error
 }
 
+type UserHandler interface {
+	UpdateProfile(c echo.Context) error
+}
+
 type AuthHandler interface {
 	LoginProcess(c echo.Context) error
 	RegisterProcess(c echo.Context) error

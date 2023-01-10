@@ -3,29 +3,34 @@ package route
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/salamanderman234/daily-aromatic/domain"
-	middleware "github.com/salamanderman234/daily-aromatic/middlewares"
 )
 
 type userViewRoute struct {
-	router  *echo.Echo
-	handler domain.UserViewHandler
+	withTokenGroup *echo.Group
+	mustAuthGroup  *echo.Group
+	mustGuestGroup *echo.Group
+	handler        domain.UserViewHandler
 }
 
-func NewUserViewRoute(r *echo.Echo, h domain.UserViewHandler) domain.Route {
+func NewUserViewRoute(withTokenGroup *echo.Group,
+	mustAuthGroup *echo.Group,
+	mustGuestGroup *echo.Group,
+	h domain.UserViewHandler,
+) domain.Route {
 	return &userViewRoute{
-		router:  r,
-		handler: h,
+		withTokenGroup: withTokenGroup,
+		mustAuthGroup:  mustAuthGroup,
+		mustGuestGroup: mustGuestGroup,
+		handler:        h,
 	}
 }
 
 func (u *userViewRoute) Register() {
-	// group := u.router.Group("/")
-	groupWithToken := u.router.Group("/", middleware.WithToken)
-	groupGuest := u.router.Group("/", middleware.MustGuest)
 	// add path
-	groupWithToken.GET("", u.handler.PageLanding)
-	groupWithToken.GET("products", u.handler.PageProductSearch)
-	groupWithToken.GET("products/:id", u.handler.ProductDetailPage)
-	groupGuest.GET("login", u.handler.PageLogin)
-	groupGuest.GET("register", u.handler.PageRegister)
+	u.withTokenGroup.GET("", u.handler.PageLanding)
+	u.mustAuthGroup.GET("profile", u.handler.PageUserProfile)
+	u.withTokenGroup.GET("products", u.handler.PageProductSearch)
+	u.withTokenGroup.GET("products/:id", u.handler.ProductDetailPage)
+	u.mustGuestGroup.GET("login", u.handler.PageLogin)
+	u.mustGuestGroup.GET("register", u.handler.PageRegister)
 }

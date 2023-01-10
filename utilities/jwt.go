@@ -6,9 +6,9 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/salamanderman234/daily-aromatic/config"
-	"github.com/salamanderman234/daily-aromatic/constanta"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 const (
@@ -36,13 +36,13 @@ func JWTValidation(token string) (*entity.JWTClaims, error) {
 	})
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenSignatureInvalid) {
-			return claims, constanta.TokenInvalid
+			return claims, variable.ErrTokenNotValid
 		}
 		return claims, err
 	}
 
 	if !tkn.Valid {
-		return claims, constanta.TokenExpired
+		return claims, variable.ErrTokenExpired
 	}
 
 	return claims, nil

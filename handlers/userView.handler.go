@@ -8,27 +8,27 @@ import (
 	"github.com/flosch/pongo2/v6"
 	"github.com/labstack/echo/v4"
 	"github.com/salamanderman234/daily-aromatic/config"
-	"github.com/salamanderman234/daily-aromatic/constanta"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
 	utility "github.com/salamanderman234/daily-aromatic/utilities"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type userViewHandler struct {
-	// userService         domain.UserService
+	userService    domain.UserService
 	productService domain.ProductService
 	// notificationService domain.NotificationService
 	reviewService domain.ReviewService
 }
 
 func NewUserViewHandler(
-	// u domain.UserService,
+	u domain.UserService,
 	p domain.ProductService,
 	// n domain.NotificationService,
 	r domain.ReviewService,
 ) domain.UserViewHandler {
 	return &userViewHandler{
-		// userService:         u,
+		userService:    u,
 		productService: p,
 		// notificationService: n,
 		reviewService: r,
@@ -62,13 +62,13 @@ func (u *userViewHandler) PageLogin(c echo.Context) error {
 	data := pongo2.Context{}
 	var credError entity.CredentialsError
 	statusCode := http.StatusOK
-
-	user_error, _ := c.Cookie("user_error")
+	// get the error cookie and set it to expired
+	user_error, _ := c.Cookie(variable.UsernameErrCookie)
 	if user_error != nil {
 		credError.UsernameError = user_error.Value
 		utility.ExpiredCookieFactory(c, user_error)
 	}
-	pass_error, _ := c.Cookie("pass_error")
+	pass_error, _ := c.Cookie(variable.PasswordErrCookie)
 	if pass_error != nil {
 		credError.PasswordError = pass_error.Value
 		utility.ExpiredCookieFactory(c, pass_error)
@@ -83,17 +83,17 @@ func (u *userViewHandler) PageRegister(c echo.Context) error {
 	statusCode := http.StatusOK
 
 	// checking cookie error data if there any
-	user_error, _ := c.Cookie("user_error")
+	user_error, _ := c.Cookie(variable.UsernameErrCookie)
 	if user_error != nil {
 		registerCredError.UsernameError = user_error.Value
 		utility.ExpiredCookieFactory(c, user_error)
 	}
-	pass_error, _ := c.Cookie("pass_error")
+	pass_error, _ := c.Cookie(variable.PasswordErrCookie)
 	if pass_error != nil {
 		registerCredError.PasswordError = pass_error.Value
 		utility.ExpiredCookieFactory(c, pass_error)
 	}
-	confirm_pass_error, _ := c.Cookie("confirm_pass_error")
+	confirm_pass_error, _ := c.Cookie(variable.ConfirmPassErrCookie)
 	if confirm_pass_error != nil {
 		registerCredError.ConfirmPasswordError = confirm_pass_error.Value
 		utility.ExpiredCookieFactory(c, confirm_pass_error)
@@ -131,9 +131,21 @@ func (u *userViewHandler) PageProductSearch(c echo.Context) error {
 }
 
 func (u *userViewHandler) PageUserProfile(c echo.Context) error {
-	var data pongo2.Context
-	statusCode := http.StatusOK
-	return c.Render(statusCode, config.FromViews("/register.html"), data)
+	data := pongo2.Context{}
+	utility.UserDataFactory(c, data)
+	_, ok := data["username"]
+	if !ok {
+		status, data, fileName := utility.ErrorPageFactory(http.StatusUnauthorized)
+		return c.Render(status, config.FromViews(fileName), data)
+	}
+	user, _, err := u.userService.GetUser(c.Request().Context(), data["username"].(string))
+	if err != nil {
+		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+		return c.Render(status, config.FromViews(fileName), data)
+	}
+
+	data["user"] = user
+	return c.Render(http.StatusOK, config.FromViews("/profile.html"), data)
 }
 
 func (p *userViewHandler) ProductDetailPage(c echo.Context) error {
@@ -153,7 +165,7 @@ func (p *userViewHandler) ProductDetailPage(c echo.Context) error {
 	// calling service
 	product, err := p.productService.GetProduct(c.Request().Context(), uint(idInt))
 	if err != nil {
-		if errors.Is(err, constanta.ProductNotFound) {
+		if errors.Is(err, variable.ErrDataNotFound) {
 			status, data, fileName := utility.ErrorPageFactory(http.StatusNotFound)
 			return c.Render(status, config.FromViews(fileName), data)
 		} else {

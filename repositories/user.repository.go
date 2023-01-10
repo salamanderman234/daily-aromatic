@@ -77,7 +77,10 @@ func (u *userRepository) GetUserByCred(c context.Context, username string, pass 
 
 func (u *userRepository) GetuserByUsername(c context.Context, username string) (model.User, error) {
 	user := model.User{}
-	result := u.conn.WithContext(c).Where("username = ?", username).First(&user)
+	// get user with reviews limit 10
+	result := u.conn.WithContext(c).Preload("Reviews", func(tx *gorm.DB) *gorm.DB {
+		return tx.Limit(10)
+	}).Preload("Reviews.Product").Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)

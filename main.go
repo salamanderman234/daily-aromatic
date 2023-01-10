@@ -7,6 +7,7 @@ import (
 	"github.com/salamanderman234/daily-aromatic/config"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	handler "github.com/salamanderman234/daily-aromatic/handlers"
+	middleware "github.com/salamanderman234/daily-aromatic/middlewares"
 	repository "github.com/salamanderman234/daily-aromatic/repositories"
 	route "github.com/salamanderman234/daily-aromatic/routes"
 	service "github.com/salamanderman234/daily-aromatic/services"
@@ -55,13 +56,19 @@ func main() {
 	productServ := service.NewProductService(productRepo)
 	reviewServ := service.NewReviewService(reviewRepo)
 	authServ := service.NewAuthService(userRepo)
+	userServ := service.NewUserService(userRepo)
 	// handler
-	userViewHandler := handler.NewUserViewHandler(productServ, reviewServ)
+	userViewHandler := handler.NewUserViewHandler(userServ, productServ, reviewServ)
 	authHandler := handler.NewAuthHandler(authServ)
+	userHandler := handler.NewUserHandler(userServ)
 	// route
+	groupWithToken := mux.Group("/", middleware.WithToken)
+	groupMustAuth := mux.Group("/", middleware.MustAuth)
+	groupMustGuest := mux.Group("/", middleware.MustGuest)
 	routeList := []domain.Route{
-		route.NewUserViewRoute(mux, userViewHandler),
-		route.NewAuthRoute(mux, authHandler),
+		route.NewUserViewRoute(groupWithToken, groupMustAuth, groupMustGuest, userViewHandler),
+		route.NewAuthRoute(groupMustGuest, authHandler),
+		route.NewUserRoute(groupMustAuth, userHandler),
 	}
 
 	for _, route := range routeList {

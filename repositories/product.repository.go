@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/salamanderman234/daily-aromatic/constanta"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 	"gorm.io/gorm"
 )
 
@@ -55,7 +55,7 @@ func (p *productRepository) GetProductByID(c context.Context, id uint) (model.Pr
 
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return model.Product{}, constanta.ProductNotFound
+			return model.Product{}, variable.ErrDataNotFound
 		}
 		return model.Product{}, result.Error
 	}

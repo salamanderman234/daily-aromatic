@@ -5,22 +5,17 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/flosch/pongo2/v6"
 	"github.com/labstack/echo/v4"
 	"github.com/salamanderman234/daily-aromatic/config"
-	"github.com/salamanderman234/daily-aromatic/constanta"
 	"github.com/salamanderman234/daily-aromatic/domain"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
 	utility "github.com/salamanderman234/daily-aromatic/utilities"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type authHandler struct {
 	serv domain.AuthService
 }
-
-const (
-	validityRange = 24
-)
 
 func NewAuthHandler(s domain.AuthService) domain.AuthHandler {
 	return &authHandler{
@@ -31,14 +26,11 @@ func NewAuthHandler(s domain.AuthService) domain.AuthHandler {
 func (a *authHandler) LoginProcess(c echo.Context) error {
 	// init
 	statusCode := http.StatusFound
-	data := pongo2.Context{}
 	creds := entity.Credentials{}
 	// binding form
 	if err := c.Bind(&creds); err != nil {
-		statusCode = http.StatusBadRequest
-		data["err"] = "Bad Request"
-		data["status_code"] = statusCode
-		return c.Render(statusCode, config.FromViews("/error.html"), data)
+		status, data, fileName := utility.ErrorPageFactory(http.StatusBadRequest)
+		return c.Render(status, config.FromViews(fileName), data)
 	}
 	// cred validation
 	isValid, credError := creds.Check()
@@ -52,24 +44,22 @@ func (a *authHandler) LoginProcess(c echo.Context) error {
 	token, err := a.serv.Login(c.Request().Context(), creds.Username, creds.Password)
 	// if username or password is incorrect
 	if err != nil {
-		if errors.Is(err, constanta.UserDataNotFoundWithCreds) {
-			cookiesName := []string{"user", "pass"}
-			errCookieList := utility.SameErrorCookieGen(cookiesName, "error", constanta.UserDataNotFoundWithCreds.Error())
+		if errors.Is(err, variable.ErrUserCredsNotFound) {
+			cookiesName := []string{variable.UsernameErrCookie, variable.PasswordErrCookie}
+			errCookieList := utility.SameCookieGen(cookiesName, variable.ErrUserCredsNotFound.Error())
 			for _, cookie := range errCookieList {
 				c.SetCookie(cookie)
 			}
 			return c.Redirect(statusCode, "/login")
 		}
-		statusCode = http.StatusInternalServerError
-		data["err"] = "Internal Server Error"
-		data["status_code"] = statusCode
-		return c.Render(statusCode, config.FromViews("/error.html"), data)
+		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+		return c.Render(status, config.FromViews(fileName), data)
 	}
 	// if success
 	session_cookie := &http.Cookie{
-		Name:    "session",
+		Name:    variable.SessionCookie,
 		Value:   token,
-		Expires: time.Now().Add(validityRange * time.Hour),
+		Expires: time.Now().Add(variable.TokenAndSessionValidityRange * time.Hour),
 		Path:    "/",
 	}
 	c.SetCookie(session_cookie)
@@ -78,14 +68,11 @@ func (a *authHandler) LoginProcess(c echo.Context) error {
 func (a *authHandler) RegisterProcess(c echo.Context) error {
 	// init
 	statusCode := http.StatusFound
-	data := pongo2.Context{}
 	creds := entity.RegisterCred{}
 	// bind
 	if err := c.Bind(&creds); err != nil {
-		statusCode = http.StatusBadRequest
-		data["err"] = "Bad Request"
-		data["status_code"] = statusCode
-		return c.Render(statusCode, config.FromViews("/error.html"), data)
+		status, data, fileName := utility.ErrorPageFactory(http.StatusBadRequest)
+		return c.Render(status, config.FromViews(fileName), data)
 	}
 	// perform cred check
 	isValid, registerCredErr := creds.Check()
@@ -98,9 +85,9 @@ func (a *authHandler) RegisterProcess(c echo.Context) error {
 	// check if username already exists
 	err := a.serv.IsUsernameAlreadyExists(c.Request().Context(), creds.Username)
 	if err != nil {
-		if errors.Is(err, constanta.UsernameAlreadyExists) {
+		if errors.Is(err, variable.ErrMustUniqueUsername) {
 			cookie := &http.Cookie{
-				Name:  "user_error",
+				Name:  variable.UsernameErrCookie,
 				Value: err.Error(),
 				Path:  "/",
 			}
@@ -108,24 +95,20 @@ func (a *authHandler) RegisterProcess(c echo.Context) error {
 			// set cookie
 			return c.Redirect(statusCode, "/register")
 		}
-		statusCode = http.StatusInternalServerError
-		data["err"] = "Internal Server Error"
-		data["status_code"] = statusCode
-		return c.Render(statusCode, config.FromViews("/error.html"), data)
+		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+		return c.Render(status, config.FromViews(fileName), data)
 	}
 	// register user using service
 	token, err := a.serv.Register(c.Request().Context(), creds.Username, creds.Password)
 	if err != nil {
-		statusCode = http.StatusInternalServerError
-		data["err"] = "Internal Server Error"
-		data["status_code"] = statusCode
-		return c.Render(statusCode, config.FromViews("/error.html"), data)
+		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+		return c.Render(status, config.FromViews(fileName), data)
 	}
 	// if success
 	session_cookie := &http.Cookie{
-		Name:    "session",
+		Name:    variable.SessionCookie,
 		Value:   token,
-		Expires: time.Now().Add(validityRange * time.Hour),
+		Expires: time.Now().Add(variable.TokenAndSessionValidityRange * time.Hour),
 		Path:    "/",
 	}
 	c.SetCookie(session_cookie)

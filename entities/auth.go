@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/salamanderman234/daily-aromatic/constanta"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type JWTClaims struct {
@@ -27,24 +27,9 @@ type CredentialsError struct {
 
 func (c *Credentials) Check() (bool, CredentialsError) {
 	credError := CredentialsError{}
-	if c.Username == "" {
-		credError.UsernameError = constanta.EmptyCreds.Error()
-		credError.ErrorCookies = append(credError.ErrorCookies, &http.Cookie{
-			Name:  "user_error",
-			Value: constanta.EmptyCreds.Error(),
-			Path:  "/",
-		})
-	}
-	if c.Password == "" {
-		credError.PasswordError = constanta.EmptyCreds.Error()
-		credError.ErrorCookies = append(credError.ErrorCookies, &http.Cookie{
-			Name:  "pass_error",
-			Value: constanta.EmptyCreds.Error(),
-			Path:  "/",
-		})
-	}
-
-	if credError.UsernameError != "" || credError.PasswordError != "" {
+	variable.EmptyFieldValidator(c.Username, variable.UsernameErrCookie, &credError.ErrorCookies)
+	variable.EmptyFieldValidator(c.Password, variable.PasswordErrCookie, &credError.ErrorCookies)
+	if len(credError.ErrorCookies) > 0 {
 		return false, credError
 	}
 	return true, credError
@@ -65,42 +50,9 @@ type RegisterCredError struct {
 
 func (c *RegisterCred) Check() (bool, RegisterCredError) {
 	credError := RegisterCredError{}
-	if c.Username == "" {
-		credError.ErrorCookies = append(credError.ErrorCookies, &http.Cookie{
-			Name:  "user_error",
-			Value: constanta.EmptyCreds.Error(),
-			Path:  "/",
-		})
-	}
 
-	if c.Password == "" {
-		credError.ErrorCookies = append(credError.ErrorCookies, &http.Cookie{
-			Name:  "pass_error",
-			Value: constanta.EmptyCreds.Error(),
-			Path:  "/",
-		})
-	}
-	if c.ConfirmPassword == "" {
-		credError.ErrorCookies = append(credError.ErrorCookies, &http.Cookie{
-			Name:  "confirm_pass_error",
-			Value: constanta.EmptyCreds.Error(),
-			Path:  "/",
-		})
-	}
-
-	if (c.ConfirmPassword != "" && c.Password != "") && (c.ConfirmPassword != c.Password) {
-		credError.ErrorCookies = append(credError.ErrorCookies, &http.Cookie{
-			Name:  "pass_error",
-			Value: constanta.PasswordNotMatch.Error(),
-			Path:  "/",
-		})
-		credError.ErrorCookies = append(credError.ErrorCookies, &http.Cookie{
-			Name:  "confirm_pass_error",
-			Value: constanta.PasswordNotMatch.Error(),
-			Path:  "/",
-		})
-	}
-
+	variable.EmptyFieldValidator(c.Username, variable.UsernameErrCookie, &credError.ErrorCookies)
+	variable.MustMatchAndNotEmptyValidator(c.Password, c.ConfirmPassword, variable.PasswordErrCookie, variable.ConfirmPassErrCookie, &credError.ErrorCookies)
 	if len(credError.ErrorCookies) > 0 {
 		return false, credError
 	}
