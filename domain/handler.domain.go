@@ -6,8 +6,9 @@ type UserViewHandler interface {
 	PageLanding(c echo.Context) error
 	PageLogin(c echo.Context) error
 	PageRegister(c echo.Context) error
-	PageProductSearch(c echo.Context) error
 	PageUserProfile(c echo.Context) error
+	PageDiffUserProfile(c echo.Context) error
+	PageProductSearch(c echo.Context) error
 	ProductDetailPage(c echo.Context) error
 }
 

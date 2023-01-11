@@ -148,6 +148,24 @@ func (u *userViewHandler) PageUserProfile(c echo.Context) error {
 	return c.Render(http.StatusOK, config.FromViews("/profile.html"), data)
 }
 
+func (u *userViewHandler) PageDiffUserProfile(c echo.Context) error {
+	data := pongo2.Context{}
+	utility.UserDataFactory(c, data)
+	username := c.Param("username")
+	if username == "" {
+		status, data, fileName := utility.ErrorPageFactory(http.StatusBadRequest)
+		return c.Render(status, config.FromViews(fileName), data)
+	}
+	user, _, err := u.userService.GetUser(c.Request().Context(), username)
+	if err != nil {
+		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+		return c.Render(status, config.FromViews(fileName), data)
+	}
+
+	data["user"] = user
+	return c.Render(http.StatusOK, config.FromViews("/diff-user-profile.html"), data)
+}
+
 func (p *userViewHandler) ProductDetailPage(c echo.Context) error {
 	id := c.Param("id")
 	idInt := 0

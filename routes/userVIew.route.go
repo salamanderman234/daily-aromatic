@@ -29,6 +29,7 @@ func (u *userViewRoute) Register() {
 	// add path
 	u.withTokenGroup.GET("", u.handler.PageLanding)
 	u.mustAuthGroup.GET("profile", u.handler.PageUserProfile)
+	u.withTokenGroup.GET("profile/:username", u.handler.PageDiffUserProfile)
 	u.withTokenGroup.GET("products", u.handler.PageProductSearch)
 	u.withTokenGroup.GET("products/:id", u.handler.ProductDetailPage)
 	u.mustGuestGroup.GET("login", u.handler.PageLogin)
