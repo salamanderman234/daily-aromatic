@@ -34,4 +34,5 @@ func (u *userViewRoute) Register() {
 	u.withTokenGroup.GET("products/:id", u.handler.ProductDetailPage)
 	u.mustGuestGroup.GET("login", u.handler.PageLogin)
 	u.mustGuestGroup.GET("register", u.handler.PageRegister)
+	u.mustAuthGroup.GET("reviews/add", u.handler.NewReviewPage)
 }

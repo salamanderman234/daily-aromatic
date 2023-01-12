@@ -67,7 +67,7 @@ func main() {
 	groupMustGuest := mux.Group("/", middleware.MustGuest)
 	routeList := []domain.Route{
 		route.NewUserViewRoute(groupWithToken, groupMustAuth, groupMustGuest, userViewHandler),
-		route.NewAuthRoute(groupMustGuest, authHandler),
+		route.NewAuthRoute(groupMustGuest, groupMustAuth, authHandler),
 		route.NewUserRoute(groupMustAuth, userHandler),
 	}
 

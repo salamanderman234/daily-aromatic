@@ -10,7 +10,7 @@ type User struct {
 	ID            uint           `json:"id"`
 	Avatar        string         `json:"avatar,omitempty"`
 	Username      string         `json:"username" form:"username"`
-	Password      string         `form:"password,omitempty"`
+	Password      string         `form:"password"`
 	FollowerTotal int            `json:"follower_total"`
 	ReviewTotal   int            `json:"review_total"`
 	Bio           string         `json:"bio" form:"bio"`

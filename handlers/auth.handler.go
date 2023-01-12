@@ -114,3 +114,15 @@ func (a *authHandler) RegisterProcess(c echo.Context) error {
 	c.SetCookie(session_cookie)
 	return c.Redirect(statusCode, "/")
 }
+
+func (a *authHandler) LogOutProcess(c echo.Context) error {
+	session, err := c.Cookie(variable.SessionCookie)
+	if err != nil {
+		status, data, fileName := utility.ErrorPageFactory(http.StatusBadRequest)
+		return c.Render(status, config.FromViews(fileName), data)
+	}
+	session.Expires = time.Unix(0, 0)
+	session.MaxAge = -1
+	c.SetCookie(session)
+	return c.Redirect(http.StatusFound, "/login")
+}

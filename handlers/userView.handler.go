@@ -103,7 +103,6 @@ func (u *userViewHandler) PageRegister(c echo.Context) error {
 	return c.Render(statusCode, config.FromViews("/register.html"), data)
 }
 func (u *userViewHandler) PageProductSearch(c echo.Context) error {
-	statusCode := http.StatusOK
 	page := 1
 	// get params
 	keyword := c.QueryParam("keyword")
@@ -127,7 +126,7 @@ func (u *userViewHandler) PageProductSearch(c echo.Context) error {
 	utility.UserDataFactory(c, data)
 	data["pagination"] = pagination
 	data["keyword"] = keyword
-	return c.Render(statusCode, config.FromViews("/product-search.html"), data)
+	return c.Render(http.StatusOK, config.FromViews("/product-search.html"), data)
 }
 
 func (u *userViewHandler) PageUserProfile(c echo.Context) error {
@@ -155,6 +154,11 @@ func (u *userViewHandler) PageDiffUserProfile(c echo.Context) error {
 	if username == "" {
 		status, data, fileName := utility.ErrorPageFactory(http.StatusBadRequest)
 		return c.Render(status, config.FromViews(fileName), data)
+	}
+	if username != "" && data["username"] != "" {
+		if username == data["username"] {
+			return c.Redirect(http.StatusFound, "/profile")
+		}
 	}
 	user, _, err := u.userService.GetUser(c.Request().Context(), username)
 	if err != nil {
@@ -196,4 +200,47 @@ func (p *userViewHandler) ProductDetailPage(c echo.Context) error {
 	// get user data login
 	utility.UserDataFactory(c, data)
 	return c.Render(http.StatusOK, config.FromViews("/product-detail.html"), data)
+}
+
+func (u *userViewHandler) NewReviewPage(c echo.Context) error {
+	data := pongo2.Context{}
+	utility.UserDataFactory(c, data)
+	page := 1
+	keyword := c.QueryParam("keyword")
+	page, _ = strconv.Atoi(c.QueryParam("page"))
+	productID, _ := strconv.Atoi(c.QueryParam("product"))
+	// if product param is not 0 then show the create new review page
+	if productID != 0 {
+		product, err := u.productService.GetProduct(c.Request().Context(), uint(productID))
+		if err != nil {
+			if errors.Is(err, variable.ErrDataNotFound) {
+				status, data, fileName := utility.ErrorPageFactory(http.StatusNotFound)
+				return c.Render(status, config.FromViews(fileName), data)
+			}
+			status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+			return c.Render(status, config.FromViews(fileName), data)
+		}
+		data["product"] = product
+		return c.Render(http.StatusOK, config.FromViews("/new-review.html"), data)
+	}
+	// otherwise show select product for review page
+	// makin filter
+	filter := entity.Product{
+		Nama:     keyword,
+		Pabrikan: keyword,
+		Aroma:    keyword,
+	}
+	// calling serv
+	result, pagination, err := u.productService.GetProductByFilter(c.Request().Context(), page, filter)
+	if err != nil {
+		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+		return c.Render(status, config.FromViews(fileName), data)
+	}
+
+	// assigning data to view
+	data["products"] = result
+	// get user data login
+	data["pagination"] = pagination
+	data["keyword"] = keyword
+	return c.Render(http.StatusOK, config.FromViews("/pilih-product.html"), data)
 }

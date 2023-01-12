@@ -10,6 +10,7 @@ type UserViewHandler interface {
 	PageDiffUserProfile(c echo.Context) error
 	PageProductSearch(c echo.Context) error
 	ProductDetailPage(c echo.Context) error
+	NewReviewPage(c echo.Context) error
 }
 
 type UserHandler interface {
@@ -18,6 +19,7 @@ type UserHandler interface {
 
 type AuthHandler interface {
 	LoginProcess(c echo.Context) error
+	LogOutProcess(c echo.Context) error
 	RegisterProcess(c echo.Context) error
 }
 

@@ -52,6 +52,7 @@ func (c *RegisterCred) Check() (bool, RegisterCredError) {
 	credError := RegisterCredError{}
 
 	variable.EmptyFieldValidator(c.Username, variable.UsernameErrCookie, &credError.ErrorCookies)
+	// variable.PasswordValidator(c.Password, variable.PasswordErrCookie, &credError.ErrorCookies)
 	variable.MustMatchAndNotEmptyValidator(c.Password, c.ConfirmPassword, variable.PasswordErrCookie, variable.ConfirmPassErrCookie, &credError.ErrorCookies)
 	if len(credError.ErrorCookies) > 0 {
 		return false, credError

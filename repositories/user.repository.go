@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
@@ -37,6 +36,11 @@ func (u *userRepository) CreateUser(c context.Context, user model.User) (model.U
 }
 func (u *userRepository) UpdateUser(c context.Context, id uint, updatedField model.User) error {
 	user := model.User{}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedField.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	updatedField.Password = string(hashedPassword)
 	result := u.conn.WithContext(c).Model(&user).Where("id = ?", id).Updates(updatedField)
 	if result.Error != nil {
 		return result.Error
@@ -83,7 +87,6 @@ func (u *userRepository) GetuserByUsername(c context.Context, username string) (
 	}).Preload("Reviews.Product").Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
-		fmt.Println(result.Error)
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return user, result.Error
 		}

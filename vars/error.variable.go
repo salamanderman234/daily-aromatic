@@ -16,7 +16,7 @@ var (
 	ErrMustUniqueUsername   = errors.New("username ini telah digunakan")
 	ErrPasswordNotMatch     = errors.New("password tidak sama")
 	ErrUserCredsNotFound    = errors.New("username atau password salah")
-	ErrPasswordNotQualified = errors.New("password harus mengandung setidaknya 8 karakter dan harus berisi huruf Kapital (A-a) dan juga angka (1-9)")
+	ErrPasswordNotQualified = errors.New("8 karakter, 1 kapital dan 1 angka")
 	ErrBioNotQualified      = errors.New("bio tidak boleh lebih dari 50 karakter")
 	// http
 	ErrBadRequest     = errors.New("bad request")
