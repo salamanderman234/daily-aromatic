@@ -1,1 +1,244 @@
-new review guys
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- tailwindcss -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- fontawesome -->
+		<script
+			src="https://kit.fontawesome.com/d5e15c66ab.js"
+			crossorigin="anonymous"
+		></script>
+		<link rel="stylesheet" href="/assets/css/index.css" />
+		<title>{{ app_name }}</title>
+	</head>
+	<body>
+		<!-- navbar -->
+		<nav
+			class="bg-purple-800  opacity-90 px-4 md:px-14 py-1 w-full z-20 top-0 left-0 text-white"
+		>
+			<div
+				class="container flex flex-wrap items-center justify-between mx-auto"
+			>
+				<!-- logo -->
+				<a href="/" class="flex items-center">
+					<img
+						src="https://flowbite.com/docs/images/logo.svg"
+						class="h-6 mr-2 flex md:h-9"
+						alt="Flowbite Logo"
+					/>
+					<span
+						class="self-center hidden md:inline text-lg whitespace-nowrap mr-2 font-bold md:text-2xl"
+						>Daily Aromatic</span
+					>
+				</a>
+				<!-- logo -->
+				<form action="/products" class="flex justify-center items-center">
+					<input name="keyword" type="text" class="h-10 w-44 md:w-60 rounded-l-full !outline-none pl-5 text-slate-500 text-sm" placeholder="Nama produk atau nama pabrik">
+					<button type="submit" class="h-10 bg-white rounded-r-full text-slate-500 px-5 flex items-center">
+						<i class="fa-sharp fa-solid fa-magnifying-glass"></i>
+					</button>
+				</form>
+				<!-- hamburger menu -->
+				<div class="flex order-1 md:hidden">
+					<button
+						data-collapse-toggle="navbar-sticky"
+						type="button"
+						class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+						aria-controls="navbar-sticky"
+						aria-expanded="false"
+					>
+						<span class="sr-only">Open main menu</span>
+						<svg
+							class="w-9 h-9"
+							aria-hidden="true"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+								clip-rule="evenodd"
+							></path>
+						</svg>
+					</button>
+				</div>
+				<!-- end of hamburger menu -->
+				<!-- menu -->
+				<div
+					class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+					id="navbar-sticky"
+				>
+					<ul
+						class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-5 md:mt-0 md:text-lg md:border-0"
+					>
+						{% if username == nil %}
+							<li class="flex items-center">
+								<a
+									href="/login"
+									class="block text-base font-bold py-2 p-0 px-5 rounded-full bg-orange-500 hover:bg-orange-600 hover:text-slate-200 text-white transition-all duration-500"
+									>
+									Masuk / Daftar
+									</a
+								>
+							</li>
+						{% else %}
+							<li class="flex items-center">
+								<img class="h-10 w-10 rounded-full mr-2"  src="https://avatars.mds.yandex.net/i?id=9a2f402621baa0366a97baa02fb1687a3f06d294-3631034-images-thumbs&n=13" alt="">
+								<a
+									href="/profile"
+									class="font-bold block py-2 pl-3 pr-4 rounded md:p-0 hover:text-slate-300 transition-all duration-500"
+									>{{ username }}</a
+								>
+							</li>
+							<li class="flex items-center">
+								<a
+									href="/reviews/add"
+									class="block text-base font-bold py-2 p-0 px-5 rounded-full bg-orange-500 hover:bg-orange-600 hover:text-slate-200 text-white transition-all duration-500"
+									>
+									<i class="fa-solid fa-plus mr-1"></i>
+									Buat Review
+									</a
+								>
+							</li>
+						{% endif %}
+						<li class="flex items-center">
+							<a
+								href="/products"
+								class="block py-2 pl-3 pr-4 rounded md:p-0 font-semibold hover:text-slate-300 transition-all duration-500"
+								>Produk</a
+							>
+						</li>
+					</ul>
+				</div>
+				<!-- end of menu -->
+			</div>
+		</nav>
+		<!-- end of navbar -->
+		<main class="px-5 md:px-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 py-5 gap-2">
+                <!-- product preview -->
+                <div class="p-10 border rounded-md flex justify-center items-center flex-col">
+                    <img src="{{ product.ImageUrl }}" alt="" class="max-h-60">
+                    <div class="flex justify-center items-center flex-col mt-5">
+                        <a href="/products/{{ product.ID }}" class="font-bold text-base md:text-lg">
+                            {{ product.Nama }}
+                        </a>
+                        <div class="flex justify-center items-center mt-3">
+                            <span class="mr-2">{{ product.Rating|floatformat:1 }}</span>
+                            <i
+                                class="fa-solid fa-star {% if product.Rating >= 1.0 %} text-yellow-400 {% endif %}"
+                            ></i>
+                            <i
+                                class="fa-solid fa-star {% if product.Rating >= 2.0 %} text-yellow-400 {% endif %}"
+                            ></i>
+                            <i
+                                class="fa-solid fa-star {% if product.Rating >= 3.0 %} text-yellow-400 {% endif %}"
+                            ></i>
+                            <i
+                                class="fa-solid fa-star {% if product.Rating >= 4.0 %} text-yellow-400 {% endif %}"
+                            ></i>
+                            <i class="fa-solid fa-star {% if product.Rating >= 5.0 %} text-yellow-400 {% endif %}"></i>
+                            <span class="ml-2">({{ product.JumlahReview }})</span>
+                        </div>
+                    </div>
+                </div>
+                 <!-- review form -->
+                <form target="/" method="POST" class="p-5 md:p-10 border rounded-md col-span-2">
+                    <div class="text-center mb-4 text-lg">
+                        <span class="font-bold">Seberapa suka dengan produk ini ?</span>
+                    </div>
+                    <div class="text-3xl flex justify-center mb-4">
+                        <i  
+                            id="sangat-kurang"
+                            class="star mx-1 hover:cursor-pointer fa-solid fa-star text-yellow-400"
+                        ></i>
+                        <i  
+                            id="agak-kurang"
+                            class="star mx-1 hover:cursor-pointer fa-solid fa-star"
+                        ></i>
+                        <i  
+                            id="biasa-aja"
+                            class="star mx-1 hover:cursor-pointer fa-solid fa-star"
+                        ></i>
+                        <i  
+                            id="lumayan-suka-!"
+                            class="star mx-1 hover:cursor-pointer fa-solid fa-star"
+                        ></i>
+                        <i id="sangat-suka-!" class="star mx-1 hover:cursor-pointer fa-solid fa-star"></i>
+                    </div>
+                    <input id="rate" type="text" name="rate" value="1" hidden>
+                    <div class="mb-5 flex justify-center items-center">
+                        <i id="emot-elem" class="fa-solid fa-face-angry text-2xl text-blue-500"></i>
+                        <span id="emot-text" class="ml-2 text-sm font-semibold">Sangat Kurang</span>
+                    </div>
+                    <div class="mb-5">
+                        <label for="comment" class="block mb-3 font-bold">
+                            Ulasan :
+                        </label>
+                        <textarea required placeholder="Aromanya sangat harum dan pas !" name="comment" id="comment" class="w-full h-36 border rounded-md p-3"></textarea>
+                    </div>
+                    <div class="flex justify-center">
+                        <button type="submit" class="rounded-md bg-orange-600 text-white w-1/3 md:w-1/4 py-2 font-bold">Beri Ulasan</button>
+                    </div>
+                </form>
+            </div>
+		</main>
+		<footer class="bg-purple-800 px-10 pt-10 pb-5">
+			<div class="flex justify-center items-center text-white">
+				<span
+					>Made with <i class="fa-solid fa-heart text-red-500"></i> by
+					<a
+						href="https://github.com/salamanderman234"
+						class="underline"
+						target="_blank"
+						>salamanderman234</a
+					></span
+				>
+			</div>
+		</footer>
+        <script>
+            rateForm = document.getElementById("rate");
+            stars = document.getElementsByClassName("star")
+            emotElem = document.getElementById("emot-elem")
+            emotTextForm = document.getElementById("emot-text")
+            emot = new Map()
+            emot.set("sangat-suka-!", ["fa-solid","fa-face-grin-hearts","text-2xl","text-red-600"])
+            emot.set("lumayan-suka-!",["fa-solid","fa-face-laugh","text-2xl","text-red-400"])
+            emot.set("biasa-aja",["fa-solid","fa-face-smile","text-2xl","text-sky-400"])
+            emot.set("agak-kurang",["fa-solid","fa-face-frown-open","text-2xl","text-sky-500"])
+            emot.set("sangat-kurang",["fa-solid","fa-face-angry","text-2xl","text-blue-500"])
+            emotText = new Map()
+            emotText.set("sangat-suka-!", "Sangat Suka !")
+            emotText.set("lumayan-suka-!", "Lumayan Suka !")
+            emotText.set("biasa-aja", "Lumayan Lah")
+            emotText.set("agak-kurang", "Agak Kurang Nih")
+            emotText.set("sangat-kurang", "Sangat Kurang")
+            
+            Array.prototype.forEach.call(stars, (star, index) => {
+                star.onclick = (event) => {
+                    text = event.target.id.split("-").join(" ")
+                    emotElem.className = ""
+                    emotElem.classList.add(...emot.get(event.target.id))
+                    rateForm.setAttribute('value', index + 1)
+                    emotTextForm.textContent = emotText.get(event.target.id)
+
+                    for(i = 0; i < stars.length; i++) {
+                        if (i <= index) {
+                            if (!star.classList.contains("text-yellow-400")) {
+                                stars[i].classList.add("text-yellow-400")
+                            }
+                        } else {
+                            if (star.classList.contains("text-yellow-400")) {
+                                stars[i].classList.remove("text-yellow-400")
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+	</body>
+</html>

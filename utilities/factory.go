@@ -32,6 +32,10 @@ func ErrorPageFactory(status int) (int, pongo2.Context, string) {
 func UserDataFactory(c echo.Context, data pongo2.Context) {
 	username := c.Get("username")
 	profilePic := c.Get("profile_pic")
+	id := c.Get("id")
+	if id != nil {
+		data["id"] = id.(uint)
+	}
 	if username != nil {
 		data["username"] = username.(string)
 	}

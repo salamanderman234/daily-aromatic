@@ -231,7 +231,12 @@ func (u *userViewHandler) NewReviewPage(c echo.Context) error {
 		Aroma:    keyword,
 	}
 	// calling serv
-	result, pagination, err := u.productService.GetProductByFilter(c.Request().Context(), page, filter)
+	id, ok := data["id"]
+	if !ok {
+		status, data, fileName := utility.ErrorPageFactory(http.StatusUnauthorized)
+		return c.Render(status, config.FromViews(fileName), data)
+	}
+	result, pagination, err := u.productService.GetProductNotInUserReview(c.Request().Context(), page, filter, id.(uint))
 	if err != nil {
 		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
 		return c.Render(status, config.FromViews(fileName), data)

@@ -78,6 +78,26 @@ func (p *productRepository) GetProducts(c context.Context, limit int, skip int, 
 	}
 	return products, nil
 }
+func (p *productRepository) GetProductsForUserReview(c context.Context, limit int, skip int, filter model.Product, idUser uint) ([]model.Product, error) {
+	// querying product table using or statement
+	var products []model.Product
+	var productsUserReview []uint
+	p.conn.WithContext(c).Table("reviews").Select("product_id").Where("user_id = ?", idUser).Find(&productsUserReview)
+	result := p.conn.WithContext(c).
+		Where(&model.Product{Pabrikan: filter.Pabrikan}).
+		Or(&model.Product{Aroma: filter.Aroma}).
+		Or("nama like ?", "%"+filter.Nama+"%").
+		Not(map[string]interface{}{"id": productsUserReview}).
+		Offset(skip).
+		Limit(limit).
+		Order("created_at desc").
+		Find(&products)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return products, nil
+}
 func (p *productRepository) UpdateProduct(c context.Context, id uint, updatedField model.Product) error {
 	product := model.Product{}
 	result := p.conn.WithContext(c).Model(&product).Where("id = ?", id).Updates(updatedField)

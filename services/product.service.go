@@ -83,7 +83,7 @@ func (p *productService) GetProductByFilter(c context.Context, page int, filter 
 	limit := searchLimit
 	offset := getSarchOffset(page)
 	// check if page exists
-	maxPage := p.repo.GetProductTotal(c, model.Product{})
+	maxPage := p.repo.GetProductTotal(c, filterModel)
 	pageMax := int(math.Ceil(float64(maxPage) / float64(limit)))
 	if maxPage == 0 {
 		maxPage = 1
@@ -96,6 +96,44 @@ func (p *productService) GetProductByFilter(c context.Context, page int, filter 
 	}
 	// calling repo
 	products, err := p.repo.GetProducts(c, limit, offset, filterModel)
+	if err != nil {
+		return nil, entity.Pagination{}, err
+	}
+	// creating pagination
+	pagination := entity.Pagination{
+		CurrentPage:  page,
+		NextPage:     page + 1,
+		PreviousPage: page - 1,
+		MaxPage:      pageMax,
+	}
+	// convert model to entity
+	var productsModel []entity.Product
+	temp, _ = json.Marshal(products)
+	json.Unmarshal(temp, &productsModel)
+
+	return productsModel, pagination, nil
+}
+func (p *productService) GetProductNotInUserReview(c context.Context, page int, filter entity.Product, idUser uint) ([]entity.Product, entity.Pagination, error) {
+	// creating model for repo
+	var filterModel model.Product
+	temp, _ := json.Marshal(filter)
+	json.Unmarshal(temp, &filterModel)
+	limit := searchLimit
+	offset := getSarchOffset(page)
+	// check if page exists
+	maxPage := p.repo.GetProductTotal(c, filterModel)
+	pageMax := int(math.Ceil(float64(maxPage) / float64(limit)))
+	if maxPage == 0 {
+		maxPage = 1
+	}
+	if page > pageMax {
+		return nil, entity.Pagination{}, errors.New("not found")
+	}
+	if page == 0 {
+		page = 1
+	}
+	// calling repo
+	products, err := p.repo.GetProductsForUserReview(c, limit, offset, filterModel, idUser)
 	if err != nil {
 		return nil, entity.Pagination{}, err
 	}

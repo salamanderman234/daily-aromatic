@@ -28,7 +28,7 @@ type UserError struct {
 func (u *User) Check() (bool, UserError) {
 	userErr := UserError{}
 	variable.EmptyFieldValidator(u.Username, "user_error", &userErr.ErrorCookies)
-
+	
 	if len(userErr.ErrorCookies) > 0 {
 		return false, userErr
 	}
