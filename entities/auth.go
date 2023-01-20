@@ -3,16 +3,8 @@ package entity
 import (
 	"net/http"
 
-	"github.com/golang-jwt/jwt/v4"
 	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
-
-type JWTClaims struct {
-	ID         uint   `json:"id"`
-	Username   string `json:"username"`
-	ProfilePic string `json:"profile_pic"`
-	jwt.RegisteredClaims
-}
 
 // credentials
 type Credentials struct {
@@ -25,10 +17,10 @@ type CredentialsError struct {
 	ErrorCookies  []*http.Cookie
 }
 
-func (c *Credentials) Check() (bool, CredentialsError) {
+func (c *Credentials) Validate() (bool, CredentialsError) {
 	credError := CredentialsError{}
-	variable.EmptyFieldValidator(c.Username, variable.UsernameErrCookie, &credError.ErrorCookies)
-	variable.EmptyFieldValidator(c.Password, variable.PasswordErrCookie, &credError.ErrorCookies)
+	emptyFieldValidator(c.Username, variable.UsernameErrCookie, &credError.ErrorCookies)
+	emptyFieldValidator(c.Password, variable.PasswordErrCookie, &credError.ErrorCookies)
 	if len(credError.ErrorCookies) > 0 {
 		return false, credError
 	}
@@ -48,12 +40,12 @@ type RegisterCredError struct {
 	ErrorCookies         []*http.Cookie
 }
 
-func (c *RegisterCred) Check() (bool, RegisterCredError) {
+func (c *RegisterCred) Validate() (bool, RegisterCredError) {
 	credError := RegisterCredError{}
 
-	variable.EmptyFieldValidator(c.Username, variable.UsernameErrCookie, &credError.ErrorCookies)
+	emptyFieldValidator(c.Username, variable.UsernameErrCookie, &credError.ErrorCookies)
 	// variable.PasswordValidator(c.Password, variable.PasswordErrCookie, &credError.ErrorCookies)
-	variable.MustMatchAndNotEmptyValidator(c.Password, c.ConfirmPassword, variable.PasswordErrCookie, variable.ConfirmPassErrCookie, &credError.ErrorCookies)
+	mustMatchAndNotEmptyValidator(c.Password, c.ConfirmPassword, variable.PasswordErrCookie, variable.ConfirmPassErrCookie, &credError.ErrorCookies)
 	if len(credError.ErrorCookies) > 0 {
 		return false, credError
 	}

@@ -33,7 +33,7 @@ func (a *authHandler) LoginProcess(c echo.Context) error {
 		return c.Render(status, config.FromViews(fileName), data)
 	}
 	// cred validation
-	isValid, credError := creds.Check()
+	isValid, credError := creds.Validate()
 	if !isValid {
 		for _, cookie := range credError.ErrorCookies {
 			c.SetCookie(cookie)
@@ -46,7 +46,7 @@ func (a *authHandler) LoginProcess(c echo.Context) error {
 	if err != nil {
 		if errors.Is(err, variable.ErrUserCredsNotFound) {
 			cookiesName := []string{variable.UsernameErrCookie, variable.PasswordErrCookie}
-			errCookieList := utility.SameCookieGen(cookiesName, variable.ErrUserCredsNotFound.Error())
+			errCookieList := utility.SameCookieFactory(cookiesName, variable.ErrUserCredsNotFound.Error())
 			for _, cookie := range errCookieList {
 				c.SetCookie(cookie)
 			}
@@ -75,7 +75,7 @@ func (a *authHandler) RegisterProcess(c echo.Context) error {
 		return c.Render(status, config.FromViews(fileName), data)
 	}
 	// perform cred check
-	isValid, registerCredErr := creds.Check()
+	isValid, registerCredErr := creds.Validate()
 	if !isValid {
 		for _, cookie := range registerCredErr.ErrorCookies {
 			c.SetCookie(cookie)

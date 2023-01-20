@@ -2,8 +2,6 @@ package entity
 
 import (
 	"net/http"
-
-	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type User struct {
@@ -25,10 +23,10 @@ type UserError struct {
 	ErrorCookies  []*http.Cookie
 }
 
-func (u *User) Check() (bool, UserError) {
+func (u *User) Validate() (bool, UserError) {
 	userErr := UserError{}
-	variable.EmptyFieldValidator(u.Username, "user_error", &userErr.ErrorCookies)
-	
+	emptyFieldValidator(u.Username, "user_error", &userErr.ErrorCookies)
+
 	if len(userErr.ErrorCookies) > 0 {
 		return false, userErr
 	}

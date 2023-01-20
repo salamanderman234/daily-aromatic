@@ -8,4 +8,7 @@ const (
 	PasswordErrCookie    = "pass_error"
 	ConfirmPassErrCookie = "confirm_pass_error"
 	BioErrCookie         = "bio_error"
+	// review err cookie
+	CommentErrCookie = "comment_error"
+	RateErrCookie    = "rate_error"
 )

@@ -9,6 +9,7 @@ import (
 	"github.com/salamanderman234/daily-aromatic/domain"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type reviewService struct {
@@ -39,8 +40,8 @@ func (r *reviewService) CreateReview(c context.Context, review entity.ReviewForm
 }
 func (r *reviewService) GetAllReviews(c context.Context, page int) ([]entity.Review, entity.Pagination, error) {
 	var reviewsEntity []entity.Review
-	limit := queryLimit
-	offset := getOffset(page)
+	limit := variable.QueryLimit
+	offset := variable.DefaultOffset(page)
 	// check if page exists
 	maxPage := r.repo.GetTotalReview(c, model.Review{})
 	pageMax := int(math.Ceil(float64(maxPage) / float64(limit)))

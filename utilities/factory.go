@@ -50,3 +50,25 @@ func ExpiredCookieFactory(ctx echo.Context, c *http.Cookie) {
 	c.MaxAge = -1
 	ctx.SetCookie(c)
 }
+
+// generating cookie
+func CookieFactory(name string, value string) *http.Cookie {
+	return &http.Cookie{
+		Name:  name,
+		Value: value,
+		Path:  "/",
+	}
+}
+
+// generating same cookie
+func SameCookieFactory(names []string, value string) []*http.Cookie {
+	cookieList := []*http.Cookie{}
+	for _, name := range names {
+		cookieList = append(cookieList, &http.Cookie{
+			Name:  name,
+			Value: value,
+			Path:  "/",
+		})
+	}
+	return cookieList
+}

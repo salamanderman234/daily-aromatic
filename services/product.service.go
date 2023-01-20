@@ -10,6 +10,7 @@ import (
 	"github.com/salamanderman234/daily-aromatic/domain"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type productService struct {
@@ -54,8 +55,8 @@ func (p *productService) GetProduct(c context.Context, id uint) (entity.Product,
 }
 func (p *productService) GetAllProducts(c context.Context, page int) ([]entity.Product, entity.Pagination, error) {
 	var productsEntity []entity.Product
-	limit := queryLimit
-	offset := getOffset(page)
+	limit := variable.QueryLimit
+	offset := variable.DefaultOffset(page)
 	// calling repo
 	products, err := p.repo.GetProducts(c, limit, offset, model.Product{})
 	if err != nil {
@@ -80,8 +81,8 @@ func (p *productService) GetProductByFilter(c context.Context, page int, filter 
 	var filterModel model.Product
 	temp, _ := json.Marshal(filter)
 	json.Unmarshal(temp, &filterModel)
-	limit := searchLimit
-	offset := getSarchOffset(page)
+	limit := variable.SearchLimit
+	offset := variable.DefaultOffset(page)
 	// check if page exists
 	maxPage := p.repo.GetProductTotal(c, filterModel)
 	pageMax := int(math.Ceil(float64(maxPage) / float64(limit)))
@@ -118,8 +119,8 @@ func (p *productService) GetProductNotInUserReview(c context.Context, page int, 
 	var filterModel model.Product
 	temp, _ := json.Marshal(filter)
 	json.Unmarshal(temp, &filterModel)
-	limit := searchLimit
-	offset := getSarchOffset(page)
+	limit := variable.SearchLimit
+	offset := variable.SearchOffset(page)
 	// check if page exists
 	maxPage := p.repo.GetProductTotal(c, filterModel)
 	pageMax := int(math.Ceil(float64(maxPage) / float64(limit)))

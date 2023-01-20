@@ -6,17 +6,23 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/salamanderman234/daily-aromatic/config"
-	entity "github.com/salamanderman234/daily-aromatic/entities"
 	model "github.com/salamanderman234/daily-aromatic/models"
 	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
+
+type JWTClaims struct {
+	ID         uint   `json:"id"`
+	Username   string `json:"username"`
+	ProfilePic string `json:"profile_pic"`
+	jwt.RegisteredClaims
+}
 
 const (
 	validityRange = 24
 )
 
 func CreateJWT(user model.User) (string, error) {
-	claims := entity.JWTClaims{
+	claims := JWTClaims{
 		ID:         user.ID,
 		Username:   user.Username,
 		ProfilePic: "test",
@@ -29,8 +35,8 @@ func CreateJWT(user model.User) (string, error) {
 	return jwt.SignedString([]byte(config.GetJWTSecret()))
 }
 
-func JWTValidation(token string) (*entity.JWTClaims, error) {
-	claims := &entity.JWTClaims{}
+func JWTValidation(token string) (*JWTClaims, error) {
+	claims := &JWTClaims{}
 	tkn, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.GetJWTSecret()), nil
 	})

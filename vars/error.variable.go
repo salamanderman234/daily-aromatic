@@ -4,9 +4,10 @@ import "errors"
 
 var (
 	// general
-	ErrEmptyField   = errors.New("field ini tidak boleh kosong")
-	ErrMustNumber   = errors.New("harus berupa angka")
-	ErrStringLength = errors.New("harus berisi setidaknya %s karakter dan maksimal %s karakter")
+	ErrEmptyField      = errors.New("field ini tidak boleh kosong")
+	ErrMustNumber      = errors.New("harus berupa angka")
+	ErrStringLength    = errors.New("harus berisi setidaknya %s karakter dan maksimal %s karakter")
+	ErrValueNotInRange = errors.New("nilai field tidak sesuai jangkauan")
 	// database
 	ErrDataNotFound = errors.New("data tidak ditemukan")
 	// auth
