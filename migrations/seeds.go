@@ -97,12 +97,13 @@ func (s *Seeder) reviewSeed(amount int) {
 			rate := float64(rand.Intn(6))
 			user.ReviewTotal++
 			product.JumlahReview++
-			product.Rating = (product.TotalRate + rate) / float64(product.JumlahReview)
+			product.TotalRate += rate
+			product.Rating = product.TotalRate / float64(product.JumlahReview)
 			review := model.Review{
 				Product: product,
 				User:    user,
 				Rate:    rate,
-				Comment: "loreflasdhfalksddjfhhasdlkjfhasdfuhlasdkjfhaslkjdhhfasdkjhfaskjfh akksahfkjashdfakjh fskadljjhhlkj",
+				Comment: "Be Yourself and Never Surrender !",
 			}
 			s.reviews = append(s.reviews, review)
 		}

@@ -36,7 +36,11 @@ func main() {
 			panic(err)
 		}
 	}
-
+	fmt.Println("migration success!")
 	s := Seeder{}
-	s.Generate(conn)
+	err = s.Generate(conn)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("seed success!")
 }

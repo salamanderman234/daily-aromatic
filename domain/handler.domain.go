@@ -23,6 +23,10 @@ type AuthHandler interface {
 	RegisterProcess(c echo.Context) error
 }
 
+type ReviewHandler interface {
+	CreateReviewProcess(c echo.Context) error
+}
+
 type SearchHandler interface {
 	ProductSearchProcess(c echo.Context) error
 }

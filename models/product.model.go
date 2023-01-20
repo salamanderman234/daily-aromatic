@@ -20,5 +20,5 @@ type Product struct {
 	Rating       float64  `json:"rating"`
 	JumlahReview int      `json:"jumlah_review"`
 	TotalRate    float64  `json:"total_rate"`
-	Reviews      []Review `json:"reviews" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Reviews      []Review `json:"reviews" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

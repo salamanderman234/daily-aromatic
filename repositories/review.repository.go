@@ -21,10 +21,28 @@ func NewReviewRepostory(c *gorm.DB) domain.ReviewRepository {
 }
 
 func (r *reviewRepository) CreateReviews(c context.Context, reviews []model.Review) error {
-	result := r.conn.WithContext(c).Create(&reviews)
-	if result.Error != nil {
-		return result.Error
-	}
+	// create reviews and update rate to product
+	r.conn.Transaction(func(tx *gorm.DB) error {
+		product := model.Product{}
+		for _, review := range reviews {
+			result := r.conn.WithContext(c).Where("id = ?", review.ProductID).First(&product)
+			if result.Error != nil {
+				tx.Rollback()
+				return result.Error
+			}
+			result = r.conn.WithContext(c).Create(&review)
+			if result.Error != nil {
+				tx.Rollback()
+				return result.Error
+			}
+			product.JumlahReview++
+			product.TotalRate += review.Rate
+			product.Rating = product.TotalRate / float64(product.JumlahReview)
+			r.conn.Save(&product)
+		}
+		tx.Commit()
+		return nil
+	})
 	return nil
 }
 

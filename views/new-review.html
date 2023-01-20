@@ -147,7 +147,7 @@
                     </div>
                 </div>
                  <!-- review form -->
-                <form target="/" method="POST" class="p-5 md:p-10 border rounded-md col-span-2">
+                <form action="/review" method="POST" class="p-5 md:p-10 border rounded-md col-span-2">
                     <div class="text-center mb-4 text-lg">
                         <span class="font-bold">Seberapa suka dengan produk ini ?</span>
                     </div>
@@ -171,6 +171,7 @@
                         <i id="sangat-suka-!" class="star mx-1 hover:cursor-pointer fa-solid fa-star"></i>
                     </div>
                     <input id="rate" type="text" name="rate" value="1" hidden>
+                    <input id="product_id" type="text" name="product_id" value="{{ product.ID }}" hidden>
                     <div class="mb-5 flex justify-center items-center">
                         <i id="emot-elem" class="fa-solid fa-face-angry text-2xl text-blue-500"></i>
                         <span id="emot-text" class="ml-2 text-sm font-semibold">Sangat Kurang</span>

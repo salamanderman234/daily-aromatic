@@ -61,6 +61,7 @@ func main() {
 	userViewHandler := handler.NewUserViewHandler(userServ, productServ, reviewServ)
 	authHandler := handler.NewAuthHandler(authServ)
 	userHandler := handler.NewUserHandler(userServ)
+	reviewHandler := handler.NewReviewHandler(reviewServ)
 	// route
 	groupWithToken := mux.Group("/", middleware.WithToken)
 	groupMustAuth := mux.Group("/", middleware.MustAuth)
@@ -69,6 +70,7 @@ func main() {
 		route.NewUserViewRoute(groupWithToken, groupMustAuth, groupMustGuest, userViewHandler),
 		route.NewAuthRoute(groupMustGuest, groupMustAuth, authHandler),
 		route.NewUserRoute(groupMustAuth, userHandler),
+		route.NewReviewRoute(groupMustAuth, reviewHandler),
 	}
 
 	for _, route := range routeList {

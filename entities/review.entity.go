@@ -11,8 +11,8 @@ type Review struct {
 }
 
 type ReviewForm struct {
-	UserID    uint    `json:"user_id"`
-	ProductID uint    `json:"product_id"`
-	Rate      float64 `json:"rate"`
-	Comment   string  `json:"comment"`
+	UserID    uint    `json:"user_id" form:"user_id"`
+	ProductID uint    `json:"product_id" form:"product_id"`
+	Rate      float64 `json:"rate" form:"rate"`
+	Comment   string  `json:"comment" form:"comment"`
 }
