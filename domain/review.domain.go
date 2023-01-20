@@ -16,6 +16,7 @@ type ReviewService interface {
 }
 
 type ReviewRepository interface {
+	IsUserReviewLegal(c context.Context, userId uint) (bool, error)
 	GetTotalReview(c context.Context, filter model.Review) int64
 	CreateReviews(c context.Context, reviews []model.Review) error
 	GetReviewByID(c context.Context, id uint) (model.Review, error)

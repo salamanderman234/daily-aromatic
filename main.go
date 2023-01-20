@@ -47,14 +47,14 @@ func main() {
 	// 	TokenLookup: "header:X-XSRF-TOKEN",
 	// }))
 
-	// // dependecies inject
-	// // repo
+	// dependecies inject
+	// repo
 	productRepo := repository.NewProductRepository(conn)
 	reviewRepo := repository.NewReviewRepostory(conn)
 	userRepo := repository.NewUserRepository(conn)
-	// // service
+	// service
 	productServ := service.NewProductService(productRepo)
-	reviewServ := service.NewReviewService(reviewRepo)
+	reviewServ := service.NewReviewService(reviewRepo, productRepo, userRepo)
 	authServ := service.NewAuthService(userRepo)
 	userServ := service.NewUserService(userRepo)
 	// handler

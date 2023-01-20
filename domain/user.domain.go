@@ -14,6 +14,7 @@ type UserService interface {
 }
 
 type UserRepository interface {
+	IsUserExists(c context.Context, id uint) (bool, error)
 	CreateUser(c context.Context, user model.User) (model.User, error)
 	UpdateUser(c context.Context, id uint, updatedField model.User) error
 	GetUserByID(c context.Context, id uint) (model.User, error)

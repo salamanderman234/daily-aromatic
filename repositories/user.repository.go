@@ -6,6 +6,7 @@ import (
 
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -21,6 +22,16 @@ func NewUserRepository(c *gorm.DB) domain.UserRepository {
 		table: "users",
 	}
 }
+func (u *userRepository) IsUserExists(c context.Context, id uint) (bool, error) {
+	result := u.conn.WithContext(c).Where("id = ?", id).First(&model.User{})
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return false, variable.ErrDataNotFound
+		}
+		return false, result.Error
+	}
+	return true, nil
+}
 
 func (u *userRepository) CreateUser(c context.Context, user model.User) (model.User, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
@@ -34,6 +45,7 @@ func (u *userRepository) CreateUser(c context.Context, user model.User) (model.U
 	}
 	return user, nil
 }
+
 func (u *userRepository) UpdateUser(c context.Context, id uint, updatedField model.User) error {
 	user := model.User{}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedField.Password), bcrypt.DefaultCost)

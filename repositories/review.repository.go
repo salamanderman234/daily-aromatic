@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 	"gorm.io/gorm"
 )
 
@@ -18,6 +20,17 @@ func NewReviewRepostory(c *gorm.DB) domain.ReviewRepository {
 		conn:  c,
 		table: "reviews",
 	}
+}
+
+func (r *reviewRepository) IsUserReviewLegal(c context.Context, userId uint) (bool, error) {
+	result := r.conn.WithContext(c).Where("user_id = ?", userId).First(&model.Review{})
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return false, variable.ErrDataNotFound
+		}
+		return false, result.Error
+	}
+	return true, nil
 }
 
 func (r *reviewRepository) CreateReviews(c context.Context, reviews []model.Review) error {

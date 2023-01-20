@@ -19,6 +19,7 @@ type ProductService interface {
 
 type ProductRepository interface {
 	GetProductTotal(c context.Context, filter model.Product) int64
+	IsProductExists(c context.Context, id uint) (bool, error)
 	CreateProducts(c context.Context, products []model.Product) error
 	GetProductByID(c context.Context, id uint) (model.Product, error)
 	GetProducts(c context.Context, limit int, skip int, filter model.Product) ([]model.Product, error)

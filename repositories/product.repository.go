@@ -43,6 +43,17 @@ func (p *productRepository) GetProductTotal(c context.Context, filter model.Prod
 	return result
 }
 
+func (p *productRepository) IsProductExists(c context.Context, id uint) (bool, error) {
+	result := p.conn.WithContext(c).Where("id = ?", id).First(&model.Product{})
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return false, variable.ErrDataNotFound
+		}
+		return false, result.Error
+	}
+	return true, nil
+}
+
 func (p *productRepository) GetProductByID(c context.Context, id uint) (model.Product, error) {
 	var product model.Product
 	// preload only 10 reviews and preload any user that attach to review

@@ -13,12 +13,16 @@ import (
 )
 
 type reviewService struct {
-	repo domain.ReviewRepository
+	repo        domain.ReviewRepository
+	productRepo domain.ProductRepository
+	userRepo    domain.UserRepository
 }
 
-func NewReviewService(r domain.ReviewRepository) domain.ReviewService {
+func NewReviewService(r domain.ReviewRepository, p domain.ProductRepository, u domain.UserRepository) domain.ReviewService {
 	return &reviewService{
-		repo: r,
+		repo:        r,
+		productRepo: p,
+		userRepo:    u,
 	}
 }
 
@@ -27,8 +31,22 @@ func (r *reviewService) CreateReview(c context.Context, review entity.ReviewForm
 	modelReview := model.Review{}
 	temp, _ := json.Marshal(review)
 	json.Unmarshal(temp, &modelReview)
+
+	// validation
+	exists, err := r.productRepo.IsProductExists(c, review.ProductID)
+	if !exists {
+		return err
+	}
+	exists, err = r.userRepo.IsUserExists(c, review.UserID)
+	if !exists {
+		return err
+	}
+	legal, err := r.repo.IsUserReviewLegal(c, review.UserID)
+	if !legal {
+		return err
+	}
 	// calling repo
-	err := r.repo.CreateReviews(
+	err = r.repo.CreateReviews(
 		c,
 		[]model.Review{modelReview},
 	)

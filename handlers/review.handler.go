@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/flosch/pongo2/v6"
@@ -9,6 +10,7 @@ import (
 	"github.com/salamanderman234/daily-aromatic/domain"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
 	utility "github.com/salamanderman234/daily-aromatic/utilities"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type reviewHandler struct {
@@ -38,6 +40,9 @@ func (r *reviewHandler) CreateReviewProcess(c echo.Context) error {
 	err := r.serv.CreateReview(c.Request().Context(), newReview)
 	if err != nil {
 		status, data, fileName := utility.ErrorPageFactory(http.StatusInternalServerError)
+		if errors.Is(err, variable.ErrDataNotFound) {
+			status, data, fileName = utility.ErrorPageFactory(http.StatusBadRequest)
+		}
 		return c.Render(status, config.FromViews(fileName), data)
 	}
 	return c.Redirect(http.StatusFound, "/")
