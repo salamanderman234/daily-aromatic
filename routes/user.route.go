@@ -20,4 +20,5 @@ func NewUserRoute(g *echo.Group, h domain.UserHandler) domain.Route {
 func (u *userRoute) Register() {
 	// add path
 	u.mustAuthGroup.POST("profile/update", u.handler.UpdateProfile)
+	u.mustAuthGroup.POST("profile/avatar/update", u.handler.UpdateProfilePic)
 }

@@ -15,6 +15,7 @@ type UserViewHandler interface {
 
 type UserHandler interface {
 	UpdateProfile(c echo.Context) error
+	UpdateProfilePic(c echo.Context) error
 }
 
 type AuthHandler interface {

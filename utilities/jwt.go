@@ -25,7 +25,7 @@ func CreateJWT(user model.User) (string, error) {
 	claims := JWTClaims{
 		ID:         user.ID,
 		Username:   user.Username,
-		ProfilePic: "test",
+		ProfilePic: user.Avatar,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(validityRange * time.Hour)},
 		},

@@ -48,11 +48,13 @@ func (u *userRepository) CreateUser(c context.Context, user model.User) (model.U
 
 func (u *userRepository) UpdateUser(c context.Context, id uint, updatedField model.User) error {
 	user := model.User{}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedField.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
+	if updatedField.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedField.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+		updatedField.Password = string(hashedPassword)
 	}
-	updatedField.Password = string(hashedPassword)
 	result := u.conn.WithContext(c).Model(&user).Where("id = ?", id).Updates(updatedField)
 	if result.Error != nil {
 		return result.Error

@@ -9,8 +9,9 @@ import (
 
 type UserService interface {
 	CreateUser(c context.Context, user entity.User) error
-	UpdateUser(c context.Context, id uint, updatedField entity.User) error
+	UpdateUser(c context.Context, id uint, updatedField entity.User) (string, error)
 	GetUser(c context.Context, username string) (entity.User, bool, error)
+	IsUsernameAlreadyExists(c context.Context, username string) error
 }
 
 type UserRepository interface {

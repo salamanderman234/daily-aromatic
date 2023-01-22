@@ -8,12 +8,16 @@ type User struct {
 	ID            uint           `json:"id"`
 	Avatar        string         `json:"avatar,omitempty"`
 	Username      string         `json:"username" form:"username"`
-	Password      string         `form:"password"`
+	Password      string         `json:"password" form:"password"`
 	FollowerTotal int            `json:"follower_total"`
 	ReviewTotal   int            `json:"review_total"`
 	Bio           string         `json:"bio" form:"bio"`
 	Notifications []Notification `json:"notifications"`
 	Reviews       []Review       `json:"reviews"`
+}
+
+type UserAvatar struct {
+	Avatar string `json:"avatar" form:"avatar"`
 }
 
 type UserError struct {

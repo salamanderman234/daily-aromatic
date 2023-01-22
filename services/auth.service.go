@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/salamanderman234/daily-aromatic/domain"
 	model "github.com/salamanderman234/daily-aromatic/models"
@@ -37,6 +38,7 @@ func (a *authService) Register(c context.Context, username string, password stri
 	user := model.User{
 		Username: username,
 		Password: password,
+		Avatar:   fmt.Sprintf("https://api.dicebear.com/5.x/avataaars-neutral/png?seed=%s&backgroundColor=ff8b3d&backgroundType=gradientLinear,solid&radius=50", username),
 	}
 	resultUser, err := a.repo.CreateUser(c, user)
 	if err != nil {

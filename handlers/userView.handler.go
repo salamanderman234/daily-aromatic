@@ -143,6 +143,19 @@ func (u *userViewHandler) PageUserProfile(c echo.Context) error {
 		return c.Render(status, config.FromViews(fileName), data)
 	}
 
+	// checking cookie error data if there any
+	var registerCredError entity.UserError
+	user_error, _ := c.Cookie(variable.UsernameErrCookie)
+	if user_error != nil {
+		registerCredError.UsernameError = user_error.Value
+		utility.ExpiredCookieFactory(c, user_error)
+	}
+	pass_error, _ := c.Cookie(variable.PasswordErrCookie)
+	if pass_error != nil {
+		registerCredError.PasswordError = pass_error.Value
+		utility.ExpiredCookieFactory(c, pass_error)
+	}
+	data["error"] = registerCredError
 	data["user"] = user
 	return c.Render(http.StatusOK, config.FromViews("/profile.html"), data)
 }

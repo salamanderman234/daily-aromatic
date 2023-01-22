@@ -7,6 +7,8 @@ import (
 	"github.com/salamanderman234/daily-aromatic/domain"
 	entity "github.com/salamanderman234/daily-aromatic/entities"
 	model "github.com/salamanderman234/daily-aromatic/models"
+	utility "github.com/salamanderman234/daily-aromatic/utilities"
+	variable "github.com/salamanderman234/daily-aromatic/vars"
 )
 
 type userService struct {
@@ -31,16 +33,18 @@ func (u *userService) CreateUser(c context.Context, user entity.User) error {
 
 	return nil
 }
-func (u *userService) UpdateUser(c context.Context, id uint, updatedField entity.User) error {
+func (u *userService) UpdateUser(c context.Context, id uint, updatedField entity.User) (string, error) {
 	var updatedFieldModel model.User
 	temp, _ := json.Marshal(updatedField)
 	json.Unmarshal(temp, &updatedFieldModel)
 
 	err := u.repo.UpdateUser(c, id, updatedFieldModel)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	user, _ := u.repo.GetUserByID(c, id)
+
+	return utility.CreateJWT(user)
 }
 func (u *userService) GetUser(c context.Context, username string) (entity.User, bool, error) {
 	user, err := u.repo.GetuserByUsername(c, username)
@@ -53,4 +57,15 @@ func (u *userService) GetUser(c context.Context, username string) (entity.User, 
 	json.Unmarshal(temp, &userEntity)
 
 	return userEntity, true, nil
+}
+func (a *userService) IsUsernameAlreadyExists(c context.Context, username string) error {
+	user, err := a.repo.GetuserByUsername(c, username)
+	if err != nil {
+		return err
+	}
+
+	if user.Username != "" {
+		return variable.ErrMustUniqueUsername
+	}
+	return nil
 }

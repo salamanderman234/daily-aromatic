@@ -87,7 +87,7 @@
 						</li>
 					{% else %}
 						<li class="flex items-center">
-							<img class="h-10 w-10 rounded-full mr-2"  src="https://avatars.mds.yandex.net/i?id=9a2f402621baa0366a97baa02fb1687a3f06d294-3631034-images-thumbs&n=13" alt="">
+							<img class="h-10 w-10 mr-2"  src="{{ profile }}" alt="">
 							<a
 								href="/profile"
 								class="font-bold block py-2 pl-3 pr-4 rounded md:p-0 hover:text-slate-300 transition-all duration-500"
@@ -203,13 +203,13 @@
 							<div class="flex justify-between">
 								<div class="flex items-center w-3/4">
 									<img
-										src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg"
+										src="{{ review.User.Avatar }}"
 										alt=""
 										class="rounded-full w-10 h-10"
 									/>
 									<a
 										href=""
-										class="ml-1 truncate font-bold hover:text-orange-400 duration-500 transition-all"
+										class="ml-2 truncate font-bold hover:text-orange-400 duration-500 transition-all"
 										>{{ review.User.Username }}</a
 									>
 								</div>
